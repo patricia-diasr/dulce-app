@@ -1,0 +1,29 @@
+/*
+ * Reset global mínimo. A tipografia e as cores de componentes são
+ * definidas pelo tema do Mantine (src/theme/theme.ts); este arquivo cuida
+ * apenas do que fica fora do alcance do MantineProvider.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100svh;
+}
+
+body {
+  /* Creme — fundo principal da identidade visual */
+  background-color: #fbf7f4;
+  /* Marrom — texto principal da identidade visual */
+  color: #4a342a;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

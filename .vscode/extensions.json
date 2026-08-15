@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "editorconfig.editorconfig",
+    "mantinedev.mantine-snippets",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.path-intellisense",
+    "usernamehw.errorlens"
+  ]
+}
