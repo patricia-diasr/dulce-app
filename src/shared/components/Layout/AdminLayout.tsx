@@ -1,6 +1,8 @@
-import { AppShell, NavLink, Stack } from '@mantine/core';
+import { AppShell, Box, NavLink, Stack } from '@mantine/core';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, Cake, Bell } from 'lucide-react';
+import { PortalHeader } from '@/shared/components/Layout/PortalHeader';
+import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -14,8 +16,14 @@ export function AdminLayout() {
   const location = useLocation();
 
   return (
-    <AppShell>
-      <AppShell.Header></AppShell.Header>
+    <AppShell
+      header={{ height: 64 }}
+      navbar={{ width: 240, breakpoint: 'sm' }}
+      padding="md"
+    >
+      <AppShell.Header>
+        <PortalHeader userName="Patrícia" showMenuButton onMenuClick={() => {}} />
+      </AppShell.Header>
       <AppShell.Navbar p="md">
         <Stack gap={4}>
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
@@ -26,12 +34,15 @@ export function AdminLayout() {
               label={label}
               leftSection={<Icon size={18} />}
               active={location.pathname === to}
+              variant="light"
             />
           ))}
         </Stack>
       </AppShell.Navbar>
       <AppShell.Main>
-        <Outlet />
+        <Box maw={MAX_CONTENT_WIDTH} mx="auto">
+          <Outlet />
+        </Box>
       </AppShell.Main>
     </AppShell>
   );
