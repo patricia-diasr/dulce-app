@@ -3,6 +3,8 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, Cake, Bell } from 'lucide-react';
 import { PortalHeader } from '@/shared/components/Layout/PortalHeader';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
+import { Breadcrumbs } from './Breadcrumbs';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -14,6 +16,7 @@ const NAV_ITEMS = [
 
 export function AdminLayout() {
   const location = useLocation();
+  const breadcrumbs = useAdminBreadcrumbs();
 
   return (
     <AppShell
@@ -23,8 +26,9 @@ export function AdminLayout() {
     >
       <AppShell.Header>
         <PortalHeader userName="Patrícia" showMenuButton onMenuClick={() => {}} />
+        <Breadcrumbs items={breadcrumbs} />
       </AppShell.Header>
-      <AppShell.Navbar p="md">
+      <AppShell.Navbar p="md" display="none">
         <Stack gap={4}>
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => (
             <NavLink
