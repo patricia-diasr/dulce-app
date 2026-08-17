@@ -20,12 +20,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dulce-header-action {
+.dulce-chrome-hover {
   transition: background-color 100ms ease;
 }
 
 @media (hover: hover) {
-  .dulce-header-action:hover {
+  .dulce-chrome-hover:hover {
     background-color: rgba(251, 247, 244, 0.16);
   }
 }

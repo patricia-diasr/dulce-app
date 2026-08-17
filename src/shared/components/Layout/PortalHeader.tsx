@@ -90,7 +90,7 @@ export function PortalHeader({
           />
           <UnstyledButton
             onClick={onLogout}
-            className="dulce-header-action"
+            className="dulce-chrome-hover"
             style={{
               display: 'flex',
               alignItems: 'center',
