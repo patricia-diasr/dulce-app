@@ -105,6 +105,7 @@ export const canceled: MantineColorsTuple = [
 ];
 
 export const creamBackground = '#FBF7F4';
+export const caramelBorder = '#D1BAA3';
 
 export const orderStatusColor = {
   PENDENTE: 'pending',
