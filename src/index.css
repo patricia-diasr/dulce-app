@@ -24,6 +24,18 @@ body {
   transition: background-color 100ms ease;
 }
 
+.dulce-auth-input {
+  border-color: rgba(209, 186, 163, 0.6) !important;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.dulce-auth-input:focus {
+  border-color: var(--mantine-color-plum-6) !important;
+  box-shadow: 0 0 0 3px rgba(107, 78, 138, 0.18);
+}
+
 @media (hover: hover) {
   .dulce-chrome-hover:hover {
     background-color: rgba(251, 247, 244, 0.16);
