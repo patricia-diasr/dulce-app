@@ -108,15 +108,16 @@ export function AuthSplitLayout({
               backgroundColor: '#FEFEFE',
             }}
           >
-            <Title order={2} fz={28} fw={700} c={textColor}>
-              {formTitle}
-            </Title>
+            <Box my={10}>
+              <Title mt={2} order={2} fz={28} fw={700} c={textColor}>
+                {formTitle}
+              </Title>
 
-            <Text c={textColor} opacity={0.75} size="sm" mt={4} mb="lg">
-              {formSubtitle}
-            </Text>
-
-            {children}
+              <Text c={textColor} opacity={0.75} size="sm" mt={4} mb="lg">
+                {formSubtitle}
+              </Text>
+              {children}
+            </Box>
           </Paper>
         </Box>
       </Box>
