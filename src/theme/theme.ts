@@ -8,12 +8,25 @@ import {
   pending,
   plum,
   rejected,
+  textColor,
 } from './colors';
+
+const inputFieldTheme = {
+  defaultProps: {
+    radius: 'sm' as const,
+  },
+  classNames: {
+    input: 'dulce-input',
+  },
+  styles: {
+    label: { fontWeight: 800, fontSize: 14, marginBottom: 6, color: textColor },
+    input: { backgroundColor: '#FEFEFE' },
+  },
+};
 
 export const theme: MantineThemeOverride = createTheme({
   primaryColor: 'plum',
   primaryShade: 5,
-
   colors: {
     plum,
     lilac,
@@ -75,29 +88,22 @@ export const theme: MantineThemeOverride = createTheme({
         centered: true,
       },
     },
-    TextInput: {
+    TextInput: inputFieldTheme,
+    PasswordInput: inputFieldTheme,
+    Select: inputFieldTheme,
+    Textarea: inputFieldTheme,
+    NumberInput: inputFieldTheme,
+    PinInput: {
       defaultProps: {
-        radius: 'md',
+        radius: 'sm',
       },
-    },
-    Select: {
-      defaultProps: {
-        radius: 'md',
-      },
-    },
-    Textarea: {
-      defaultProps: {
-        radius: 'md',
+      classNames: {
+        input: 'dulce-input',
       },
     },
     Badge: {
       defaultProps: {
         radius: 'sm',
-      },
-    },
-    NumberInput: {
-      defaultProps: {
-        radius: 'md',
       },
     },
   },

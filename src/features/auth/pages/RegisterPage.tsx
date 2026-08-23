@@ -3,12 +3,6 @@ import { Link } from 'react-router-dom';
 import { AuthSplitLayout } from '@/shared/components/Auth/AuthSplitLayout';
 import { textColor } from '@/theme/colors';
 
-const fieldStyles = {
-  label: { fontWeight: 800, fontSize: 14, marginBottom: 6, color: textColor },
-  input: { backgroundColor: '#FEFEFE' },
-};
-const fieldClassNames = { input: 'dulce-auth-input' };
-
 export function RegisterPage() {
   return (
     <AuthSplitLayout
@@ -24,22 +18,16 @@ export function RegisterPage() {
           label="Nome completo"
           placeholder="Digite seu nome completo"
           radius="sm"
-          styles={fieldStyles}
-          classNames={fieldClassNames}
         />
         <TextInput
           label="E-mail"
           placeholder="email@email.com"
           radius="sm"
-          styles={fieldStyles}
-          classNames={fieldClassNames}
         />
         <TextInput
           label="Telefone"
           placeholder="(99) 99999-9999"
           radius="sm"
-          styles={fieldStyles}
-          classNames={fieldClassNames}
         />
         <Button fullWidth color="plum" radius="sm" mt="xs">
           Cadastrar-se

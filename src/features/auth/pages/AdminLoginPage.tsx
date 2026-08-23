@@ -1,12 +1,5 @@
 import { Button, PasswordInput, Stack, TextInput } from '@mantine/core';
 import { AuthSplitLayout } from '@/shared/components/Auth/AuthSplitLayout';
-import { textColor } from '@/theme/colors';
-
-const fieldStyles = {
-  label: { fontWeight: 800, fontSize: 14, marginBottom: 6, color: textColor },
-  input: { backgroundColor: '#FEFEFE' },
-};
-const fieldClassNames = { input: 'dulce-auth-input' };
 
 export function AdminLoginPage() {
   return (
@@ -23,15 +16,11 @@ export function AdminLoginPage() {
           label="E-mail"
           placeholder="email@email.com"
           radius="sm"
-          styles={fieldStyles}
-          classNames={fieldClassNames}
         />
         <PasswordInput
           label="Senha"
           placeholder="Insira sua senha"
           radius="sm"
-          styles={fieldStyles}
-          classNames={fieldClassNames}
         />
         <Button fullWidth color="plum" radius="sm" mt="lg">
           Entrar
