@@ -7,6 +7,7 @@ import { PortalHeader } from '@/shared/components/Layout/PortalHeader';
 import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { creamBackground } from '@/theme/colors';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
+import { useLogout } from '@/shared/hooks/useLogout';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -20,6 +21,7 @@ export function AdminLayout() {
   const location = useLocation();
   const breadcrumbs = useAdminBreadcrumbs();
   const [navOpened, { toggle: toggleNav }] = useDisclosure(false);
+  const handleLogout = useLogout('/admin/login');
 
   return (
     <AppShell
@@ -32,7 +34,12 @@ export function AdminLayout() {
       padding="md"
     >
       <AppShell.Header style={{ borderBottom: 'none' }}>
-        <PortalHeader userName="Patrícia" showMenuButton onMenuClick={toggleNav} />
+        <PortalHeader
+          userName="Patrícia"
+          showMenuButton
+          onMenuClick={toggleNav}
+          onLogout={handleLogout}
+        />
         <Breadcrumbs items={breadcrumbs} />
       </AppShell.Header>
 
