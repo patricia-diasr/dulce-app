@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const registerSchema = z.object({
   name: z.string().min(2, 'Informe seu nome completo'),
   email: z.string().email('Informe um e-mail válido'),
-  phone: z.string().min(8, 'Informe um telefone válido'),
+  phone: z.string().regex(/^\(\d{2}\) \d{4,5}-\d{4}$/, 'Informe um telefone válido'),
 });
 export type RegisterFormValues = z.infer<typeof registerSchema>;
 

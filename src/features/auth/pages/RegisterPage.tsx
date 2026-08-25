@@ -8,6 +8,7 @@ import { textColor } from '@/theme/colors';
 import { registerCustomer } from '../api/authApi';
 import { registerSchema, type RegisterFormValues } from '../types';
 import { getApiErrorMessage } from '@/lib/api/errors';
+import { PhoneInput } from '@/shared/components/PhoneInput/PhoneInput';
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export function RegisterPage() {
             key={form.key('email')}
             {...form.getInputProps('email')}
           />
-          <TextInput
+          <PhoneInput
             label="Telefone"
             placeholder="(99) 99999-9999"
             key={form.key('phone')}

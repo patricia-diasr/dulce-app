@@ -8,6 +8,7 @@ import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { creamBackground } from '@/theme/colors';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 import { useLogout } from '@/shared/hooks/useLogout';
+import { getName } from '@/shared/utils/tokenStorage';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -35,7 +36,7 @@ export function AdminLayout() {
     >
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <PortalHeader
-          userName="Patrícia"
+          userName={getName() ?? ''}
           showMenuButton
           onMenuClick={toggleNav}
           onLogout={handleLogout}

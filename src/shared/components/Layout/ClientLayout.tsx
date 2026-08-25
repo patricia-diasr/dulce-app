@@ -5,6 +5,7 @@ import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 import { Breadcrumbs } from './Breadcrumbs';
 import { useClientBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { useLogout } from '@/shared/hooks/useLogout';
+import { getName } from '@/shared/utils/tokenStorage';
 
 export function ClientLayout() {
   const breadcrumbs = useClientBreadcrumbs();
@@ -13,7 +14,7 @@ export function ClientLayout() {
   return (
     <AppShell header={{ height: 64 }} padding="md">
       <AppShell.Header>
-        <PortalHeader userName="Patrícia" onLogout={handleLogout} />
+        <PortalHeader userName={getName() ?? ''} onLogout={handleLogout} />
         <Breadcrumbs items={breadcrumbs} />
       </AppShell.Header>
       <AppShell.Main>

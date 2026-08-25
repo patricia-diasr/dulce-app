@@ -89,6 +89,7 @@ export const theme: MantineThemeOverride = createTheme({
       },
     },
     TextInput: inputFieldTheme,
+    InputBase: inputFieldTheme,
     PasswordInput: inputFieldTheme,
     Select: inputFieldTheme,
     Textarea: inputFieldTheme,
