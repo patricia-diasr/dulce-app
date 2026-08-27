@@ -20,8 +20,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dulce-chrome-hover {
-  transition: background-color 100ms ease;
+.dulce-input {
+  border-color: rgba(209, 186, 163, 0.6) !important;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.dulce-input:focus {
+  border-color: var(--mantine-color-plum-6) !important;
+  box-shadow: 0 0 0 3px rgba(107, 78, 138, 0.18);
+}
+
+.dulce-auth-input:focus {
+  border-color: var(--mantine-color-plum-6) !important;
+  box-shadow: 0 0 0 3px rgba(107, 78, 138, 0.18);
 }
 
 @media (hover: hover) {

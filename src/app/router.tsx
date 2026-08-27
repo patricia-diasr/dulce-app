@@ -32,6 +32,7 @@ import { NotificationSettingsPage } from '@/features/notifications/pages/Notific
 import { NotificationTemplateDetailPage } from '@/features/notifications/pages/NotificationTemplateDetailPage';
 
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
+import { RequireRole } from '@/shared/components/Auth/RequireRole';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -40,7 +41,11 @@ export const router = createBrowserRouter([
 
   {
     path: '/',
-    element: <ClientLayout />,
+    element: (
+      <RequireRole role="CUSTOMER">
+        <ClientLayout />
+      </RequireRole>
+    ),
     children: [
       { index: true, element: <OrdersHomePage /> },
       { path: 'pedidos/novo', element: <NewOrderPage /> },
@@ -52,7 +57,11 @@ export const router = createBrowserRouter([
 
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: (
+      <RequireRole role="ADMIN">
+        <AdminLayout />
+      </RequireRole>
+    ),
     children: [
       { index: true, element: <AdminDashboardPage /> },
 
