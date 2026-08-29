@@ -72,7 +72,7 @@ export function RegisterPage() {
             type="submit"
             loading={register.isPending}
             fullWidth
-            color="plum"
+            color="plum.6"
             radius="sm"
             mt="xs"
           >
@@ -81,7 +81,7 @@ export function RegisterPage() {
 
           <Text mt="sm" ta="center" size="sm" c={textColor}>
             Já tem conta?{' '}
-            <Anchor component={Link} to="/login" c="lilac.6" fw={700} underline="hover">
+            <Anchor component={Link} to="/login" c="plum.6" fw={700} underline="hover">
               Entrar
             </Anchor>
           </Text>

@@ -58,7 +58,7 @@ export function AdminLoginPage() {
             type="submit"
             loading={login.isPending}
             fullWidth
-            color="plum"
+            color="plum.6"
             radius="sm"
             mt="xs"
           >

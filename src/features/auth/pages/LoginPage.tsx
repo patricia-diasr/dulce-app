@@ -107,7 +107,7 @@ export function LoginPage() {
               type="submit"
               loading={requestCode.isPending}
               fullWidth
-              color="plum"
+              color="plum.6"
               radius="sm"
               mt="xs"
             >
@@ -119,7 +119,7 @@ export function LoginPage() {
               <Anchor
                 component={Link}
                 to="/cadastro"
-                c="lilac.6"
+                c="plum.6"
                 fw={700}
                 underline="hover"
               >
@@ -144,7 +144,7 @@ export function LoginPage() {
               type="submit"
               loading={verifyCode.isPending}
               fullWidth
-              color="plum"
+              color="plum.6"
               radius="sm"
               mt="xs"
             >
@@ -162,7 +162,7 @@ export function LoginPage() {
                   component="button"
                   type="button"
                   onClick={handleResend}
-                  c="lilac.6"
+                  c="plum.6"
                   fw={700}
                   underline="hover"
                 >

@@ -12,12 +12,12 @@ export function ClientLayout() {
   const handleLogout = useLogout('/login');
 
   return (
-    <AppShell header={{ height: 64 }} padding="md">
+    <AppShell header={{ height: 64 }}>
       <AppShell.Header>
         <PortalHeader userName={getName() ?? ''} onLogout={handleLogout} />
         <Breadcrumbs items={breadcrumbs} />
       </AppShell.Header>
-      <AppShell.Main>
+      <AppShell.Main mt={60}>
         <Box maw={MAX_CONTENT_WIDTH} mx="auto">
           <Outlet />
         </Box>
