@@ -30,7 +30,7 @@ export function RegisterPage() {
     },
     onError: (error) =>
       notifications.show({
-        color: 'rejected',
+        color: 'rejected.7',
         title: 'Não foi possível concluir o cadastro',
         message: getApiErrorMessage(
           error,

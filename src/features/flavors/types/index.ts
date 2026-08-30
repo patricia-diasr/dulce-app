@@ -13,3 +13,9 @@ export interface Flavor {
   active: boolean;
   prices: FlavorPrice[];
 }
+
+export const DEFAULT_FLAVOR_SIZES: Pick<FlavorPrice, 'sizeId' | 'sizeName'>[] = [
+  { sizeId: 1, sizeName: '1kg' },
+  { sizeId: 2, sizeName: '2kg' },
+  { sizeId: 3, sizeName: '4kg' },
+];
