@@ -19,9 +19,10 @@ import type { Flavor } from '../types';
 
 interface FlavorCardProps {
   flavor: Flavor;
+  onDelete: (flavor: Flavor) => void;
 }
 
-export function FlavorCard({ flavor }: FlavorCardProps) {
+export function FlavorCard({ flavor, onDelete }: FlavorCardProps) {
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
   const isVerySmallScreen = useMediaQuery('(max-width: 349px)');
 
@@ -93,13 +94,13 @@ export function FlavorCard({ flavor }: FlavorCardProps) {
                 variant="subtle"
                 color="rejected"
                 aria-label={`Excluir ${flavor.name}`}
+                onClick={() => onDelete(flavor)}
               >
                 <Trash2 size={18} />
               </ActionIcon>
             </Tooltip>
           </Group>
 
-          {/* Badges */}
           <Group
             gap={6}
             style={{

@@ -1,13 +1,21 @@
 import { Box, Container, SimpleGrid, Skeleton, Text } from '@mantine/core';
-import { useQuery } from '@tanstack/react-query';
+import { notifications } from '@mantine/notifications';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Fab } from '@/shared/components/Fab/Fab';
-import { listFlavors } from '../api/flavorsApi';
+import { deleteFlavor, listFlavors } from '../api/flavorsApi';
 import { FlavorCard } from '../components/FlavorCard';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
+import type { Flavor } from '../types';
+import { useState } from 'react';
+import { getApiErrorMessage } from '@/lib/api/errors';
+import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
 
 export function FlavorsListPage() {
+  const queryClient = useQueryClient();
+  const [flavorToDelete, setFlavorToDelete] = useState<Flavor | null>(null);
+
   const {
     data: flavors,
     isLoading,
@@ -17,9 +25,26 @@ export function FlavorsListPage() {
     queryFn: listFlavors,
   });
 
-  const activeFlavors = flavors?.filter((flavor) => flavor.active);
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteFlavor(id),
+    onSuccess: () => {
+      notifications.show({
+        color: 'accepted.7',
+        title: 'Recheio excluído',
+        message: `${flavorToDelete?.name} foi removido do cardápio.`,
+      });
+      setFlavorToDelete(null);
+      queryClient.invalidateQueries({ queryKey: ['admin', 'flavors'] });
+    },
+    onError: (error) =>
+      notifications.show({
+        color: 'rejected.7',
+        title: 'Não foi possível excluir',
+        message: getApiErrorMessage(error, 'Tente novamente em instantes.'),
+      }),
+  });
 
-  const showEmptyState = !isLoading && !isError && activeFlavors?.length === 0;
+  const showEmptyState = !isLoading && !isError && flavors?.length === 0;
 
   return (
     <Box
@@ -67,10 +92,10 @@ export function FlavorsListPage() {
           </Box>
         )}
 
-        {activeFlavors && activeFlavors.length > 0 && (
+        {flavors && flavors.length > 0 && (
           <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }}>
-            {activeFlavors.map((flavor) => (
-              <FlavorCard key={flavor.id} flavor={flavor} />
+            {flavors.map((flavor) => (
+              <FlavorCard key={flavor.id} flavor={flavor} onDelete={setFlavorToDelete} />
             ))}
           </SimpleGrid>
         )}
@@ -79,6 +104,15 @@ export function FlavorsListPage() {
       <Fab component={Link} to="/admin/recheios/novo" leftSection={<Plus size={18} />}>
         Novo recheio
       </Fab>
+
+      <ConfirmDeleteModal
+        opened={flavorToDelete !== null}
+        onClose={() => setFlavorToDelete(null)}
+        onConfirm={() => flavorToDelete && deleteMutation.mutate(flavorToDelete.id)}
+        title="Excluir recheio"
+        itemName={flavorToDelete?.name}
+        loading={deleteMutation.isPending}
+      />
     </Box>
   );
 }
