@@ -66,6 +66,7 @@ export const router = createBrowserRouter([
       { index: true, element: <AdminDashboardPage /> },
 
       { path: 'pedidos/novo', element: <AdminNewOrderPage /> },
+      { path: 'pedidos/novo/carrinho', element: <CartPage /> },
       { path: 'pedidos/:orderId', element: <AdminOrderDetailPage /> },
       { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
 

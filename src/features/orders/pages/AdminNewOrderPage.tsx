@@ -1,10 +1,5 @@
-import { ComingSoon } from '@/shared/components/ComingSoon/ComingSoon';
+import { OrderCakeBuilder } from '../components/OrderCakeBuilder';
 
 export function AdminNewOrderPage() {
-  return (
-    <ComingSoon
-      title="Novo pedido (admin)"
-      description="Seleção/cadastro do cliente e mesmo fluxo de montagem do pedido, sem restrição de 72h."
-    />
-  );
+  return <OrderCakeBuilder mode="admin" />;
 }

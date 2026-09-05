@@ -27,6 +27,7 @@ const inputFieldTheme = {
 export const theme: MantineThemeOverride = createTheme({
   primaryColor: 'plum',
   primaryShade: 5,
+  black: textColor,
   colors: {
     plum,
     lilac,

@@ -104,7 +104,7 @@ export const canceled: MantineColorsTuple = [
   '#444444',
 ];
 
-export const textColor = '#041515';
+export const textColor = '#4A342A';
 export const creamBackground = '#FBF7F4';
 export const caramelBorder = '#D1BAA3';
 
