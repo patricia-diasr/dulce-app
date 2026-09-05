@@ -25,7 +25,7 @@ export function AdminLoginPage() {
     },
     onError: (error) =>
       notifications.show({
-        color: 'rejected',
+        color: 'rejected.7',
         title: 'Não foi possível entrar',
         message: getApiErrorMessage(error, 'Confira o e-mail e a senha informados.'),
       }),
@@ -58,7 +58,7 @@ export function AdminLoginPage() {
             type="submit"
             loading={login.isPending}
             fullWidth
-            color="plum"
+            color="plum.6"
             radius="sm"
             mt="xs"
           >

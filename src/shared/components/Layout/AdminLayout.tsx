@@ -32,7 +32,6 @@ export function AdminLayout() {
         breakpoint: 'sm',
         collapsed: { desktop: !navOpened, mobile: !navOpened },
       }}
-      padding="md"
     >
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <PortalHeader
@@ -79,7 +78,7 @@ export function AdminLayout() {
       </AppShell.Navbar>
 
       <AppShell.Main>
-        <Box maw={MAX_CONTENT_WIDTH} mx="auto">
+        <Box mt={75} maw={MAX_CONTENT_WIDTH} mx="auto">
           <Outlet />
         </Box>
       </AppShell.Main>
