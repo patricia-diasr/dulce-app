@@ -17,6 +17,8 @@ import { AdminOrderDetailPage } from '@/features/orders/pages/AdminOrderDetailPa
 import { AdminOrderEditPage } from '@/features/orders/pages/AdminOrderEditPage';
 
 import { CustomersListPage } from '@/features/customers/pages/CustomersListPage';
+import { CreateCustomerPage } from '@/features/customers/pages/CreateCustomerPage';
+import { EditCustomerPage } from '@/features/customers/pages/EditCustomerPage';
 import { CustomerDetailPage } from '@/features/customers/pages/CustomerDetailPage';
 
 import { CalendarPage } from '@/features/schedule/pages/CalendarPage';
@@ -71,7 +73,9 @@ export const router = createBrowserRouter([
       { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
 
       { path: 'clientes', element: <CustomersListPage /> },
+      { path: 'clientes/novo', element: <CreateCustomerPage /> },
       { path: 'clientes/:customerId', element: <CustomerDetailPage /> },
+      { path: 'clientes/:customerId/editar', element: <EditCustomerPage /> },
 
       { path: 'calendario', element: <CalendarPage /> },
       { path: 'calendario/dias/:date', element: <DayOrdersPage /> },

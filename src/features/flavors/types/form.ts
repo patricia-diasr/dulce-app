@@ -8,7 +8,10 @@ export const flavorPriceFormSchema = z.object({
 });
 
 export const flavorFormSchema = z.object({
-  name: z.string().min(2, 'Informe o nome do recheio'),
+  name: z
+    .string()
+    .min(2, 'Informe o nome do recheio')
+    .max(100, 'Máximo de 100 caracteres'),
   defaultCakeBase: z.enum(['white', 'dark'], { error: 'Selecione a massa padrão' }),
   defaultTopping: z.enum(['white', 'dark'], { error: 'Selecione a raspa padrão' }),
   prices: z.array(flavorPriceFormSchema).min(1),
