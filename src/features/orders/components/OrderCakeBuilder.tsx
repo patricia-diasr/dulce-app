@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Affix,
   Button,
@@ -9,41 +10,71 @@ import {
   Text,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { listFlavors } from '@/features/flavors/api/flavorsApi';
-import type { Flavor } from '@/features/flavors/types';
 import type { CakeBase } from '@/shared/utils/cakeBase';
 import { CakeForm } from './CakeForm';
 import { CakeSummary } from './CakeSummary';
 import { ImportantOrderInfo } from './ImportantOrderInfo';
+import { CAKE_FORM_INFO_ITEMS } from '../constants/infoItems';
+import { useOrderCart } from '../hooks/useOrderCart';
 import { EMPTY_CAKE_FORM, type CakeFormValues } from '../types/cake';
 
+interface EditingItemState {
+  editingItemId: string;
+  cake: CakeFormValues;
+}
+
+interface AdminCustomerLocationState {
+  customerId?: number;
+  customerName?: string;
+  customerPhone?: string;
+}
+
 interface OrderCakeBuilderProps {
-  mode: 'customer' | 'admin' | 'edit';
-  initialValues?: CakeFormValues;
-  onAddToCart?: (values: CakeFormValues, flavor: Flavor) => void;
+  mode: 'customer' | 'admin';
+  cartId: string;
 }
 
 function getCakeBase(value: string): CakeBase {
   return value === 'dark' ? 'dark' : 'white';
 }
 
-export function OrderCakeBuilder({
-  mode,
-  initialValues = EMPTY_CAKE_FORM,
-  onAddToCart,
-}: OrderCakeBuilderProps) {
+export function OrderCakeBuilder({ mode, cartId }: OrderCakeBuilderProps) {
   const navigate = useNavigate();
-  const [values, setValues] = useState<CakeFormValues>(initialValues);
+  const location = useLocation();
+  const rawState = location.state as
+    (EditingItemState & AdminCustomerLocationState) | null;
+  const editingState = rawState?.editingItemId ? (rawState as EditingItemState) : null;
+
+  const [values, setValues] = useState<CakeFormValues>(
+    editingState?.cake ?? EMPTY_CAKE_FORM,
+  );
   const { data: flavors = [], isLoading } = useQuery({
     queryKey: ['flavors', 'active'],
     queryFn: listFlavors,
   });
+  const { addItem, updateItem, setCustomer, clear } = useOrderCart(cartId);
+
+  useEffect(() => {
+    if (mode === 'admin' && rawState?.customerId && rawState?.customerName) {
+      setCustomer({
+        id: rawState.customerId,
+        name: rawState.customerName,
+        phone: rawState.customerPhone ?? '',
+      });
+    }
+  }, [
+    mode,
+    rawState?.customerId,
+    rawState?.customerName,
+    rawState?.customerPhone,
+    setCustomer,
+  ]);
 
   const defaultFlavor = flavors[0];
   const formValues =
-    !values.flavorId && defaultFlavor
+    !values.flavorId && !editingState && defaultFlavor
       ? {
           ...values,
           flavorId: String(defaultFlavor.id),
@@ -54,9 +85,10 @@ export function OrderCakeBuilder({
   const selectedFlavor = flavors.find(
     (flavor) => String(flavor.id) === formValues.flavorId,
   );
-  const cancelPath = mode === 'admin' || mode === 'edit' ? '/admin' : '/';
+  const cancelPath = mode === 'admin' ? '/admin' : '/';
   const cartPath =
     mode === 'admin' ? '/admin/pedidos/novo/carrinho' : '/pedidos/novo/carrinho';
+  const backPath = editingState ? cartPath : cancelPath;
 
   const handleChange = (nextValues: CakeFormValues) => {
     const flavorChanged = nextValues.flavorId !== formValues.flavorId;
@@ -76,8 +108,17 @@ export function OrderCakeBuilder({
 
   const handleAdd = () => {
     if (!selectedFlavor) return;
-    onAddToCart?.(formValues, selectedFlavor);
-    navigate(cartPath, { state: { cake: formValues, flavor: selectedFlavor } });
+    if (editingState) {
+      updateItem(editingState.editingItemId, formValues, selectedFlavor);
+    } else {
+      addItem(formValues, selectedFlavor);
+    }
+    navigate(cartPath);
+  };
+
+  const handleCancel = () => {
+    if (!editingState) clear();
+    navigate(backPath);
   };
 
   if (isLoading) {
@@ -106,15 +147,16 @@ export function OrderCakeBuilder({
               flavors={flavors}
               loadingFlavors={isLoading}
               onChange={handleChange}
-              onCancel={() => navigate(cancelPath)}
+              onCancel={handleCancel}
               onAddToCart={handleAdd}
+              submitLabel={editingState ? 'Salvar alterações' : 'Adicionar ao carrinho'}
             />
           </Stack>
         </Grid.Col>
         <Grid.Col span={{ base: 10, lg: 4 }}>
           <Stack gap="xl">
             <CakeSummary values={formValues} flavor={selectedFlavor} />
-            <ImportantOrderInfo />
+            <ImportantOrderInfo items={CAKE_FORM_INFO_ITEMS} />
           </Stack>
         </Grid.Col>
       </Grid>
@@ -132,7 +174,7 @@ export function OrderCakeBuilder({
             variant="subtle"
             fz="xs"
             style={{ flex: '0 0 30%' }}
-            onClick={() => navigate(cancelPath)}
+            onClick={handleCancel}
           >
             Cancelar
           </Button>
@@ -143,7 +185,7 @@ export function OrderCakeBuilder({
             onClick={handleAdd}
             disabled={!formValues.flavorId}
           >
-            Adicionar ao carrinho
+            {editingState ? 'Salvar alterações' : 'Adicionar ao carrinho'}
           </Button>
         </Group>
       </Affix>

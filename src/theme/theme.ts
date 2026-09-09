@@ -95,6 +95,8 @@ export const theme: MantineThemeOverride = createTheme({
     Select: inputFieldTheme,
     Textarea: inputFieldTheme,
     NumberInput: inputFieldTheme,
+    DateInput: inputFieldTheme,
+    TimeInput: inputFieldTheme,
     PinInput: {
       defaultProps: {
         radius: 'sm',

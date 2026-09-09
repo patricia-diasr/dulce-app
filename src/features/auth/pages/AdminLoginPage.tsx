@@ -19,8 +19,8 @@ export function AdminLoginPage() {
 
   const login = useMutation({
     mutationFn: adminLogin,
-    onSuccess: ({ token, role, name }) => {
-      setToken(token, role, name);
+    onSuccess: ({ token, user, role, name }) => {
+      setToken(token, user, role, name);
       navigate('/admin');
     },
     onError: (error) =>

@@ -61,8 +61,8 @@ export function LoginPage() {
 
   const verifyCode = useMutation({
     mutationFn: (code: string) => verifyCustomerLoginCode(emailForm.values.email, code),
-    onSuccess: ({ token, role, name }) => {
-      setToken(token, role, name);
+    onSuccess: ({ token, user, role, name }) => {
+      setToken(token, user, role, name);
       navigate('/');
     },
     onError: (error) =>

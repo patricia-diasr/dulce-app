@@ -28,7 +28,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 
 export function CakeSummary({ values, flavor }: CakeSummaryProps) {
   const isSmallScreen = useMediaQuery('(max-width: 48em)');
-  const contentLimit = isSmallScreen ? 17 : 30;
+  const contentLimit = isSmallScreen ? 15 : 30;
   const size = CAKE_SIZES.find((item) => item.value === values.sizeId)?.label ?? '—';
   const price = flavor?.prices.find(
     (item) => String(item.sizeId) === values.sizeId,

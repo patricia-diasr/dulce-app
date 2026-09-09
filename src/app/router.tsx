@@ -9,7 +9,6 @@ import { AdminLoginPage } from '@/features/auth/pages/AdminLoginPage';
 import { OrdersHomePage } from '@/features/orders/pages/OrdersHomePage';
 import { NewOrderPage } from '@/features/orders/pages/NewOrderPage';
 import { CartPage } from '@/features/orders/pages/CartPage';
-import { OrderSummaryPage } from '@/features/orders/pages/OrderSummaryPage';
 import { OrderDetailPage } from '@/features/orders/pages/OrderDetailPage';
 import { AdminDashboardPage } from '@/features/orders/pages/AdminDashboardPage';
 import { AdminNewOrderPage } from '@/features/orders/pages/AdminNewOrderPage';
@@ -35,6 +34,7 @@ import { NotificationTemplateDetailPage } from '@/features/notifications/pages/N
 
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { RequireRole } from '@/shared/components/Auth/RequireRole';
+import { AdminCartPage } from '@/features/orders/pages/AdminCartPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -52,7 +52,6 @@ export const router = createBrowserRouter([
       { index: true, element: <OrdersHomePage /> },
       { path: 'pedidos/novo', element: <NewOrderPage /> },
       { path: 'pedidos/novo/carrinho', element: <CartPage /> },
-      { path: 'pedidos/novo/resumo', element: <OrderSummaryPage /> },
       { path: 'pedidos/:orderId', element: <OrderDetailPage /> },
     ],
   },
@@ -68,7 +67,7 @@ export const router = createBrowserRouter([
       { index: true, element: <AdminDashboardPage /> },
 
       { path: 'pedidos/novo', element: <AdminNewOrderPage /> },
-      { path: 'pedidos/novo/carrinho', element: <CartPage /> },
+      { path: 'pedidos/novo/carrinho', element: <AdminCartPage /> },
       { path: 'pedidos/:orderId', element: <AdminOrderDetailPage /> },
       { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
 
