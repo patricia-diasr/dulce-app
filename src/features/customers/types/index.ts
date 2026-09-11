@@ -1,3 +1,6 @@
+import type { CakeBase } from '@/shared/utils/cakeBase';
+import type { CreationChannel, OrderStatus } from '@/features/orders/types/order';
+
 export interface Customer {
   id: number;
   name: string;
@@ -20,8 +23,8 @@ export interface OrderItem {
   flavorName: string;
   sizeId: number;
   sizeName: string;
-  topping: 'white' | 'dark';
-  cakeBase: 'white' | 'dark';
+  topping: CakeBase;
+  cakeBase: CakeBase;
   unitPrice: number;
   message: string | null;
   notes: string | null;
@@ -47,8 +50,8 @@ export interface Order {
   createdAt: string;
   pickupAt: string;
   completedAt: string | null;
-  status: string;
-  creationChannel: 'CUSTOMER' | 'ADMIN';
+  status: OrderStatus;
+  creationChannel: CreationChannel;
   notes: string | null;
   items: OrderItem[];
   invoice: Invoice | null;
