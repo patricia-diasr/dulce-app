@@ -2,6 +2,7 @@ import type { CakeBase } from '@/shared/utils/cakeBase';
 
 export type OrderStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'CANCELED' | 'COMPLETED';
 export type CreationChannel = 'CUSTOMER' | 'ADMIN';
+export type InvoiceStatus = 'PENDING' | 'PARTIAL' | 'PAID';
 
 export interface OrderItemPayload {
   flavorId: number;
@@ -39,12 +40,17 @@ export interface Payment {
   paymentMethod: string;
 }
 
+export interface PaymentPayload {
+  amount: number;
+  paymentMethod: string;
+}
+
 export interface InvoiceResponse {
   id: number;
   grossAmount: number;
   discount: number;
-  status: 'PENDING' | 'PARTIAL' | 'PAID';
-  refundDue: number;
+  status: InvoiceStatus;
+  refundDue?: number;
   payments: Payment[];
 }
 
@@ -52,6 +58,7 @@ export interface OrderResponse {
   id: number;
   customerId: number;
   customerName: string;
+  customerPhone: string;
   createdAt: string;
   pickupAt: string;
   completedAt: string | null;
@@ -59,5 +66,10 @@ export interface OrderResponse {
   creationChannel: CreationChannel;
   notes: string | null;
   items: OrderItemResponse[];
-  invoice: InvoiceResponse;
+  invoice: InvoiceResponse | null;
 }
+
+export type NestedOrder = Omit<
+  OrderResponse,
+  'customerId' | 'customerName' | 'customerPhone'
+>;

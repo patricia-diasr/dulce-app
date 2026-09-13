@@ -155,6 +155,7 @@ export function CartItemsCard({
               min={0}
               max={grossAmount}
               step={0.5}
+              placeholder="R$ 0.00"
               prefix="R$ "
               value={discount ?? undefined}
               onChange={(value) =>
