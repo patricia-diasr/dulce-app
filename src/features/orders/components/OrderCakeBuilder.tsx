@@ -34,13 +34,20 @@ interface AdminCustomerLocationState {
 interface OrderCakeBuilderProps {
   mode: 'customer' | 'admin';
   cartId: string;
+  cancelPath?: string;
+  cartPath?: string;
 }
 
 function getCakeBase(value: string): CakeBase {
   return value === 'dark' ? 'dark' : 'white';
 }
 
-export function OrderCakeBuilder({ mode, cartId }: OrderCakeBuilderProps) {
+export function OrderCakeBuilder({
+  mode,
+  cartId,
+  cancelPath: cancelPathProp,
+  cartPath: cartPathProp,
+}: OrderCakeBuilderProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const rawState = location.state as
@@ -85,9 +92,11 @@ export function OrderCakeBuilder({ mode, cartId }: OrderCakeBuilderProps) {
   const selectedFlavor = flavors.find(
     (flavor) => String(flavor.id) === formValues.flavorId,
   );
-  const cancelPath = mode === 'admin' ? '/admin' : '/';
+
+  const cancelPath = cancelPathProp ?? (mode === 'admin' ? '/admin' : '/');
   const cartPath =
-    mode === 'admin' ? '/admin/pedidos/novo/carrinho' : '/pedidos/novo/carrinho';
+    cartPathProp ??
+    (mode === 'admin' ? '/admin/pedidos/novo/carrinho' : '/pedidos/novo/carrinho');
   const backPath = editingState ? cartPath : cancelPath;
 
   const handleChange = (nextValues: CakeFormValues) => {
@@ -156,7 +165,7 @@ export function OrderCakeBuilder({ mode, cartId }: OrderCakeBuilderProps) {
         <Grid.Col span={{ base: 10, lg: 4 }}>
           <Stack gap="xl">
             <CakeSummary values={formValues} flavor={selectedFlavor} />
-            <ImportantOrderInfo items={CAKE_FORM_INFO_ITEMS} />
+            {mode === 'customer' && <ImportantOrderInfo items={CAKE_FORM_INFO_ITEMS} />}
           </Stack>
         </Grid.Col>
       </Grid>

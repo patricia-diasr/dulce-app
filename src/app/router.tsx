@@ -35,6 +35,7 @@ import { NotificationTemplateDetailPage } from '@/features/notifications/pages/N
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { RequireRole } from '@/shared/components/Auth/RequireRole';
 import { AdminCartPage } from '@/features/orders/pages/AdminCartPage';
+import { AdminOrderEditCakePage } from '@/features/orders/pages/AdminOrderEditCakePage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -70,6 +71,8 @@ export const router = createBrowserRouter([
       { path: 'pedidos/novo/carrinho', element: <AdminCartPage /> },
       { path: 'pedidos/:orderId', element: <AdminOrderDetailPage /> },
       { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
+      { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
+      { path: 'pedidos/:orderId/editar/bolo', element: <AdminOrderEditCakePage /> },
 
       { path: 'clientes', element: <CustomersListPage /> },
       { path: 'clientes/novo', element: <CreateCustomerPage /> },

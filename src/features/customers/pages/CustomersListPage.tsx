@@ -116,7 +116,7 @@ export function CustomersListPage() {
 
         {!isLoading && !isError && totalElements > 0 && (
           <Text size="sm" c="dimmed" mb="md">
-            {totalElements}{' '}
+            {totalElements}
             {totalElements === 1 ? 'cliente encontrado' : 'clientes encontrados'}
           </Text>
         )}

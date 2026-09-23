@@ -1,32 +1,83 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Affix, Box, Button, Container, Grid, Group, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
+import type { Flavor } from '@/features/flavors/types';
 import { getApiErrorMessage } from '@/lib/api/errors';
 import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
-import { createOrder } from '../api/ordersApi';
+import { updateOrder } from '../api/ordersApi';
 import { CART_INFO_ITEMS } from '../constants/infoItems';
 import { CartItemsCard } from './CartItemsCard';
-import { OrderSummaryCard } from './OrderSummaryCard';
 import { ImportantOrderInfo } from './ImportantOrderInfo';
-import { useOrderCart, type CartItem } from '../hooks/useOrderCart';
-import type { CreateOrderPayload } from '../types/order';
-import { getCustomerId } from '@/shared/utils/tokenStorage';
+import { OrderSummaryCard } from './OrderSummaryCard';
+import { useOrderCart, type CartItem, type CartState } from '../hooks/useOrderCart';
 import { CAKE_SIZES } from '../types/cake';
 import {
   isDiscountValid,
   isPickupTooSoon,
   MIN_HOURS_BEFORE_PICKUP,
 } from '../utils/orderValidation';
+import type {
+  CreateOrderPayload,
+  OrderItemResponse,
+  OrderResponse,
+} from '../types/order';
 
-interface OrderCartPageProps {
+interface OrderEditBuilderProps {
   mode: 'customer' | 'admin';
-  cartId: string;
+  order: OrderResponse;
 }
 
-export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
+function freezeFlavor(item: OrderItemResponse): Flavor {
+  return {
+    id: item.flavorId,
+    name: item.flavorName,
+    active: false,
+    defaultCakeBase: item.cakeBase,
+    defaultTopping: item.topping,
+    prices: [
+      {
+        sizeId: item.sizeId,
+        sizeName: item.sizeName,
+        costPrice: item.unitPrice,
+        salePrice: item.unitPrice,
+      },
+    ],
+  } as Flavor;
+}
+
+function buildStateFromOrder(order: OrderResponse): CartState {
+  const pickup = dayjs(order.pickupAt);
+  return {
+    items: order.items.map((item) => ({
+      id: crypto.randomUUID(),
+      cake: {
+        sizeId: String(item.sizeId),
+        flavorId: String(item.flavorId),
+        cakeBase: item.cakeBase,
+        topping: item.topping,
+        message: item.message ?? '',
+        notes: item.notes ?? '',
+      },
+      flavor: freezeFlavor(item),
+    })),
+    pickupDate: pickup.format('YYYY-MM-DD'),
+    pickupTime: pickup.format('HH:mm'),
+    discount: order.invoice?.discount || null,
+    notes: order.notes ?? '',
+    customer: null,
+  };
+}
+
+export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const cartId = `${mode}-order-edit-${order.id}`;
+  const cakeFormPath = `/admin/pedidos/${order.id}/editar/bolo`;
+  const detailPath = `/admin/pedidos/${order.id}`;
 
   const {
     items,
@@ -34,20 +85,15 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
     pickupTime,
     discount,
     notes,
-    customer,
     removeItem,
     setPickup,
     setDiscount,
     setNotes,
     clear,
-  } = useOrderCart(cartId);
+  } = useOrderCart(cartId, () => buildStateFromOrder(order));
 
   const [itemPendingDeletion, setItemPendingDeletion] = useState<CartItem | null>(null);
 
-  const cakeFormPath = mode === 'admin' ? '/admin/pedidos/novo' : '/pedidos/novo';
-  const cancelPath = mode === 'admin' ? '/admin' : '/';
-  const customerId = mode === 'admin' ? (customer?.id ?? null) : getCustomerId();
-  const noCustomerSelected = mode === 'admin' && !customer;
   const discountExceedsTotal = discount != null && !isDiscountValid(discount, items);
   const pickupTooSoon = mode === 'customer' && isPickupTooSoon(pickupDate, pickupTime);
   const canFinish =
@@ -57,30 +103,32 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
     !discountExceedsTotal &&
     !pickupTooSoon;
 
-  const createMutation = useMutation({
-    mutationFn: (payload: CreateOrderPayload) => createOrder(customerId!, payload),
-    onSuccess: () => {
+  const cleanupAndLeave = (to: string) => {
+    clear();
+    navigate(to);
+  };
+
+  const updateMutation = useMutation({
+    mutationFn: (payload: CreateOrderPayload) => updateOrder(order.id, payload),
+    onSuccess: (data) => {
       notifications.show({
         color: 'accepted',
-        title: 'Pedido realizado!',
-        message:
-          mode === 'customer'
-            ? 'Seu pedido foi enviado para análise da confeitaria.'
-            : 'O pedido foi registrado com sucesso.',
+        title: 'Pedido atualizado!',
+        message: 'As alterações foram salvas.',
       });
-      clear();
-      navigate(cancelPath);
+      queryClient.setQueryData(['admin', 'orders', order.id], data);
+      cleanupAndLeave(detailPath);
     },
     onError: (error) =>
       notifications.show({
         color: 'rejected.7',
-        title: 'Não foi possível concluir o pedido',
+        title: 'Não foi possível salvar',
         message: getApiErrorMessage(error, 'Verifique os dados e tente novamente.'),
       }),
   });
 
   const handleFinish = () => {
-    if (!items.length || !pickupDate || !pickupTime || !customerId) return;
+    if (!canFinish) return;
 
     if (discount != null && !isDiscountValid(discount, items)) {
       notifications.show({
@@ -103,7 +151,7 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
     const payload: CreateOrderPayload = {
       pickupAt: new Date(`${pickupDate}T${pickupTime}:00`).toISOString(),
       notes: notes || undefined,
-      discount: mode === 'admin' && discount ? discount : undefined,
+      discount: mode === 'admin' ? (discount ?? 0) : undefined,
       items: items.map((item) => ({
         flavorId: item.flavor.id,
         sizeId: Number(item.cake.sizeId),
@@ -114,66 +162,29 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
       })),
     };
 
-    createMutation.mutate(payload);
+    updateMutation.mutate(payload);
   };
 
-  const handleCancel = () => {
-    clear();
-    navigate(cancelPath);
-  };
-
-  useEffect(() => {
-    if (noCustomerSelected) {
-      const timeout = setTimeout(
-        () => navigate('/admin/clientes', { replace: true }),
-        1500,
-      );
-      return () => clearTimeout(timeout);
-    }
-  }, [noCustomerSelected, navigate]);
-
-  useEffect(() => {
-    if (!items.length && !noCustomerSelected) {
-      const timeout = setTimeout(() => navigate(cakeFormPath, { replace: true }), 1500);
-      return () => clearTimeout(timeout);
-    }
-  }, [items.length, noCustomerSelected, cakeFormPath, navigate]);
-
-  if (noCustomerSelected) {
+  if (items.length === 0) {
     return (
       <Container size="xl" py="xl">
         <Box
           style={{
             minHeight: '50vh',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-          }}
-        >
-          <Text c="rejected">
-            Nenhum cliente selecionado. Redirecionando para a listagem de clientes...
-          </Text>
-        </Box>
-      </Container>
-    );
-  }
-
-  if (!items.length) {
-    return (
-      <Container size="xl" py="xl">
-        <Box
-          style={{
-            minHeight: '50vh',
-            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
           }}
         >
           <Text c="dimmed">
-            Seu carrinho está vazio. Redirecionando para o formulário de bolo...
+            Nenhum bolo no pedido. Adicione pelo menos um bolo para salvar.
           </Text>
+          <Button color="plum.6" radius="sm" onClick={() => navigate(cakeFormPath)}>
+            Adicionar bolo
+          </Button>
         </Box>
       </Container>
     );
@@ -201,11 +212,13 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
             }
             onDeleteItem={setItemPendingDeletion}
             onAddAnother={() => navigate(cakeFormPath)}
-            onCancel={handleCancel}
+            onCancel={() => cleanupAndLeave(detailPath)}
             onFinish={handleFinish}
-            finishing={createMutation.isPending}
+            finishing={updateMutation.isPending}
+            submitLabel="Salvar alterações"
           />
         </Grid.Col>
+
         <Grid.Col span={{ base: 10, lg: 4 }}>
           <Stack gap="xl">
             <OrderSummaryCard
@@ -214,8 +227,8 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
               pickupTime={pickupTime ?? ''}
               discount={discount}
               customer={
-                mode === 'admin' && customer
-                  ? { name: customer.name, phone: customer.phone }
+                mode === 'admin'
+                  ? { name: order.customerName, phone: order.customerPhone }
                   : null
               }
             />
@@ -237,7 +250,7 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
             variant="subtle"
             fz="xs"
             style={{ flex: '0 0 30%' }}
-            onClick={handleCancel}
+            onClick={() => cleanupAndLeave(detailPath)}
           >
             Cancelar
           </Button>
@@ -246,10 +259,10 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
             fz="xs"
             style={{ flex: 1, whiteSpace: 'nowrap' }}
             onClick={handleFinish}
-            loading={createMutation.isPending}
+            loading={updateMutation.isPending}
             disabled={!canFinish}
           >
-            Finalizar pedido
+            Salvar alterações
           </Button>
         </Group>
       </Affix>

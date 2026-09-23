@@ -115,7 +115,7 @@ export function LoginPage() {
             </Button>
 
             <Text mt="sm" ta="center" size="sm" c={textColor}>
-              Não tem conta?{' '}
+              Não tem conta?
               <Anchor
                 component={Link}
                 to="/cadastro"
@@ -152,7 +152,7 @@ export function LoginPage() {
             </Button>
 
             <Text mt="sm" ta="center" size="sm" c={textColor}>
-              Não recebeu o código?{' '}
+              Não recebeu o código?
               {secondsLeft > 0 ? (
                 <Text component="span" c="dimmed">
                   Reenviar em 0:{secondsLeft.toString().padStart(2, '0')}

@@ -38,6 +38,7 @@ interface CartItemsCardProps {
   onCancel: () => void;
   onFinish: () => void;
   finishing?: boolean;
+  submitLabel?: string;
 }
 
 export function CartItemsCard({
@@ -57,6 +58,7 @@ export function CartItemsCard({
   onCancel,
   onFinish,
   finishing,
+  submitLabel = 'Finalizar pedido',
 }: CartItemsCardProps) {
   const grossAmount = calculateGrossAmount(items);
   const discountExceedsTotal = discount != null && !isDiscountValid(discount, items);
@@ -89,6 +91,7 @@ export function CartItemsCard({
                 index={index}
                 onEdit={onEditItem}
                 onDelete={onDeleteItem}
+                canDelete={items.length > 1}
               />
               {index < items.length - 1 && <Divider color="caramel.2" mt="lg" />}
             </div>
@@ -128,7 +131,7 @@ export function CartItemsCard({
           </SimpleGrid>
           {pickupTooSoon && (
             <Text size="sm" c="rejected">
-              Pedidos pelo portal precisam ser feitos com pelo menos{' '}
+              Pedidos pelo portal precisam ser feitos com pelo menos
               {MIN_HOURS_BEFORE_PICKUP} horas de antecedência.
             </Text>
           )}
@@ -182,7 +185,7 @@ export function CartItemsCard({
             loading={finishing}
             disabled={!canFinish}
           >
-            Finalizar pedido
+            {submitLabel}
           </Button>
         </SimpleGrid>
       </Stack>

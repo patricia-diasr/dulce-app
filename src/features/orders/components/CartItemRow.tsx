@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Stack, Text, ThemeIcon, Tooltip } from '@mantine/core';
+import { Box, Group, Stack, Text, ThemeIcon, ActionIcon, Tooltip } from '@mantine/core';
 import { Cake, Pencil, Trash2 } from 'lucide-react';
 import { CAKE_BASE_LABEL } from '@/shared/utils/cakeBase';
 import { CAKE_SIZES } from '../types/cake';
@@ -9,9 +9,16 @@ interface CartItemRowProps {
   index: number;
   onEdit: (item: CartItem) => void;
   onDelete: (item: CartItem) => void;
+  canDelete: boolean;
 }
 
-export function CartItemRow({ item, index, onEdit, onDelete }: CartItemRowProps) {
+export function CartItemRow({
+  item,
+  index,
+  onEdit,
+  onDelete,
+  canDelete,
+}: CartItemRowProps) {
   const size = CAKE_SIZES.find((s) => s.value === item.cake.sizeId)?.label ?? '—';
   const price =
     item.flavor.prices.find((p) => String(p.sizeId) === item.cake.sizeId)?.salePrice ?? 0;
@@ -98,15 +105,21 @@ export function CartItemRow({ item, index, onEdit, onDelete }: CartItemRowProps)
               <Pencil size={16} />
             </ActionIcon>
           </Tooltip>
-          <Tooltip label="Remover bolo" withArrow>
-            <ActionIcon
-              variant="subtle"
-              color="rejected"
-              onClick={() => onDelete(item)}
-              aria-label="Remover bolo"
-            >
-              <Trash2 size={16} />
-            </ActionIcon>
+          <Tooltip
+            label={canDelete ? 'Remover bolo' : 'O pedido precisa ter pelo menos um bolo'}
+            withArrow
+          >
+            <Box style={{ display: 'inline-block' }}>
+              <ActionIcon
+                variant="subtle"
+                color="rejected"
+                onClick={() => onDelete(item)}
+                aria-label="Remover bolo"
+                disabled={!canDelete}
+              >
+                <Trash2 size={16} />
+              </ActionIcon>
+            </Box>
           </Tooltip>
         </Group>
       </Stack>

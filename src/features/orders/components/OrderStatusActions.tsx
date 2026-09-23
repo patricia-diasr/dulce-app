@@ -206,8 +206,8 @@ export function OrderStatusActions({ order, onUpdate }: OrderStatusActionsProps)
                 <br />
                 <Text component="span" fw={700} c="rejected">
                   Atenção:
-                </Text>{' '}
-                {formatCurrency(totalPaid)} já{' '}
+                </Text>
+                {formatCurrency(totalPaid)} já
                 {totalPaid === 1 ? 'foi pago' : 'foram pagos'} e deve ser devolvido ao
                 cliente.
               </>

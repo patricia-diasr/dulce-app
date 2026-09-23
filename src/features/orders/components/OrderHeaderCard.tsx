@@ -86,26 +86,26 @@ export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
           <Text size="sm">
             <Text span fw={700}>
               Canal:
-            </Text>{' '}
+            </Text>
             {CREATION_CHANNEL_LABELS[order.creationChannel]}
           </Text>
           <Text size="sm">
             <Text span fw={700}>
               Criado em:
-            </Text>{' '}
+            </Text>
             {createdDate}
           </Text>
           <Text size="sm">
             <Text span fw={700}>
               Retirada:
-            </Text>{' '}
+            </Text>
             {pickupDate}
           </Text>
           {completedDate && (
             <Text size="sm">
               <Text span fw={700}>
                 Concluído em:
-              </Text>{' '}
+              </Text>
               {completedDate}
             </Text>
           )}

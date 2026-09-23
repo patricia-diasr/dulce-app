@@ -41,7 +41,7 @@ export function ConfirmDeleteModal({
     >
       <Stack gap="md">
         <Text size="md">
-          Tem certeza que deseja excluir{' '}
+          Tem certeza que deseja excluir
           <Text component="span" fw={700}>
             {itemName ?? 'este item'}
           </Text>

@@ -82,7 +82,7 @@ export function RegisterPage() {
           </Button>
 
           <Text mt="sm" ta="center" size="sm" c={textColor}>
-            Já tem conta?{' '}
+            Já tem conta?
             <Anchor component={Link} to="/login" c="plum.6" fw={700} underline="hover">
               Entrar
             </Anchor>

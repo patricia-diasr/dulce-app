@@ -200,7 +200,7 @@ export function OrderInvoiceCard({ order, onUpdate }: OrderInvoiceCardProps) {
                         {formatCurrency(payment.amount)}
                       </Text>
                       <Text size="xs" c="dimmed">
-                        {payment.paymentMethod} ·{' '}
+                        {payment.paymentMethod}
                         {new Date(payment.paidAt).toLocaleDateString('pt-BR')}
                       </Text>
                     </Stack>
