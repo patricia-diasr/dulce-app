@@ -131,7 +131,7 @@ export function CartItemsCard({
           </SimpleGrid>
           {pickupTooSoon && (
             <Text size="sm" c="rejected">
-              Pedidos pelo portal precisam ser feitos com pelo menos
+              Pedidos pelo portal precisam ser feitos com pelo menos{' '}
               {MIN_HOURS_BEFORE_PICKUP} horas de antecedência.
             </Text>
           )}

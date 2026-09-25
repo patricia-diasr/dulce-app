@@ -76,8 +76,12 @@ export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
   const queryClient = useQueryClient();
 
   const cartId = `${mode}-order-edit-${order.id}`;
-  const cakeFormPath = `/admin/pedidos/${order.id}/editar/bolo`;
-  const detailPath = `/admin/pedidos/${order.id}`;
+  const cakeFormPath =
+    mode === 'admin'
+      ? `/admin/pedidos/${order.id}/editar/bolo`
+      : `/pedidos/${order.id}/editar/bolo`;
+  const detailPath =
+    mode === 'admin' ? `/admin/pedidos/${order.id}` : `/pedidos/${order.id}`;
 
   const {
     items,
@@ -116,7 +120,7 @@ export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
         title: 'Pedido atualizado!',
         message: 'As alterações foram salvas.',
       });
-      queryClient.setQueryData(['admin', 'orders', order.id], data);
+      queryClient.setQueryData(['orders', order.id], data);
       cleanupAndLeave(detailPath);
     },
     onError: (error) =>

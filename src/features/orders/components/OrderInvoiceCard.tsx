@@ -31,10 +31,15 @@ import type {
 
 interface OrderInvoiceCardProps {
   order: OrderResponse;
-  onUpdate: (patch: Partial<OrderResponse>) => void;
+  onUpdate?: (patch: Partial<OrderResponse>) => void;
+  readOnly?: boolean;
 }
 
-export function OrderInvoiceCard({ order, onUpdate }: OrderInvoiceCardProps) {
+export function OrderInvoiceCard({
+  order,
+  onUpdate,
+  readOnly = false,
+}: OrderInvoiceCardProps) {
   const { invoice } = order;
   const [formOpen, setFormOpen] = useState(false);
   const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
@@ -43,7 +48,7 @@ export function OrderInvoiceCard({ order, onUpdate }: OrderInvoiceCardProps) {
   );
 
   const applyInvoiceUpdate = (updatedInvoice: InvoiceResponse) => {
-    onUpdate({ invoice: updatedInvoice });
+    onUpdate?.({ invoice: updatedInvoice });
   };
 
   const createMutation = useMutation({
@@ -114,7 +119,8 @@ export function OrderInvoiceCard({ order, onUpdate }: OrderInvoiceCardProps) {
       }),
   });
 
-  const canCreatePayment = order.status === 'ACCEPTED' || order.status === 'COMPLETED';
+  const canCreatePayment =
+    !readOnly && (order.status === 'ACCEPTED' || order.status === 'COMPLETED');
   const isFullyPaid = invoice?.status === 'PAID';
   const createDisabled = !invoice || !canCreatePayment || isFullyPaid;
   const createDisabledReason = !invoice
@@ -200,106 +206,114 @@ export function OrderInvoiceCard({ order, onUpdate }: OrderInvoiceCardProps) {
                         {formatCurrency(payment.amount)}
                       </Text>
                       <Text size="xs" c="dimmed">
-                        {payment.paymentMethod}
+                        {payment.paymentMethod} ·{' '}
                         {new Date(payment.paidAt).toLocaleDateString('pt-BR')}
                       </Text>
                     </Stack>
-                    <Group gap={4}>
-                      <Tooltip label="Editar pagamento" withArrow>
-                        <ActionIcon
-                          variant="subtle"
-                          color="plum"
-                          onClick={() => setEditingPayment(payment)}
-                          aria-label="Editar pagamento"
-                        >
-                          <Pencil size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                      <Tooltip label="Excluir pagamento" withArrow>
-                        <ActionIcon
-                          variant="subtle"
-                          color="rejected"
-                          onClick={() => setPaymentPendingDeletion(payment)}
-                          aria-label="Excluir pagamento"
-                        >
-                          <Trash2 size={16} />
-                        </ActionIcon>
-                      </Tooltip>
-                    </Group>
+                    {!readOnly && (
+                      <Group gap={4}>
+                        <Tooltip label="Editar pagamento" withArrow>
+                          <ActionIcon
+                            variant="subtle"
+                            color="plum"
+                            onClick={() => setEditingPayment(payment)}
+                            aria-label="Editar pagamento"
+                          >
+                            <Pencil size={16} />
+                          </ActionIcon>
+                        </Tooltip>
+                        <Tooltip label="Excluir pagamento" withArrow>
+                          <ActionIcon
+                            variant="subtle"
+                            color="rejected"
+                            onClick={() => setPaymentPendingDeletion(payment)}
+                            aria-label="Excluir pagamento"
+                          >
+                            <Trash2 size={16} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    )}
                   </Group>
                 ))
               )}
             </Stack>
 
-            <Tooltip
-              label={createDisabledReason}
-              disabled={!createDisabledReason}
-              withArrow
-            >
-              <Box style={{ display: 'inline-block' }}>
-                <Button
-                  variant="light"
-                  color="plum"
-                  leftSection={<Plus size={16} />}
-                  onClick={() => setFormOpen(true)}
-                  disabled={createDisabled}
-                >
-                  Registrar pagamento
-                </Button>
-              </Box>
-            </Tooltip>
+            {!readOnly && (
+              <Tooltip
+                label={createDisabledReason}
+                disabled={!createDisabledReason}
+                withArrow
+              >
+                <Box style={{ display: 'inline-block' }}>
+                  <Button
+                    variant="light"
+                    color="plum"
+                    leftSection={<Plus size={16} />}
+                    onClick={() => setFormOpen(true)}
+                    disabled={createDisabled}
+                  >
+                    Registrar pagamento
+                  </Button>
+                </Box>
+              </Tooltip>
+            )}
           </>
         )}
       </Stack>
 
-      <PaymentFormModal
-        opened={formOpen || editingPayment !== null}
-        onClose={() => {
-          setFormOpen(false);
-          setEditingPayment(null);
-        }}
-        onSubmit={(values) => {
-          if (editingPayment) {
-            updateMutation.mutate({ paymentId: editingPayment.id, payload: values });
-          } else {
-            createMutation.mutate(values);
-          }
-        }}
-        initialValues={
-          editingPayment
-            ? {
-                amount: editingPayment.amount,
-                paymentMethod: editingPayment.paymentMethod,
+      {!readOnly && (
+        <>
+          <PaymentFormModal
+            opened={formOpen || editingPayment !== null}
+            onClose={() => {
+              setFormOpen(false);
+              setEditingPayment(null);
+            }}
+            onSubmit={(values) => {
+              if (editingPayment) {
+                updateMutation.mutate({ paymentId: editingPayment.id, payload: values });
+              } else {
+                createMutation.mutate(values);
               }
-            : undefined
-        }
-        submitting={createMutation.isPending || updateMutation.isPending}
-        maxAmount={
-          invoice
-            ? invoice.grossAmount -
-              invoice.discount -
-              invoice.payments.reduce(
-                (s, p) => s + (p.id === editingPayment?.id ? 0 : p.amount),
-                0,
-              )
-            : undefined
-        }
-      />
+            }}
+            initialValues={
+              editingPayment
+                ? {
+                    amount: editingPayment.amount,
+                    paymentMethod: editingPayment.paymentMethod,
+                  }
+                : undefined
+            }
+            submitting={createMutation.isPending || updateMutation.isPending}
+            maxAmount={
+              invoice
+                ? invoice.grossAmount -
+                  invoice.discount -
+                  invoice.payments.reduce(
+                    (s, p) => s + (p.id === editingPayment?.id ? 0 : p.amount),
+                    0,
+                  )
+                : undefined
+            }
+          />
 
-      <ConfirmDeleteModal
-        opened={paymentPendingDeletion !== null}
-        onClose={() => setPaymentPendingDeletion(null)}
-        onConfirm={() =>
-          paymentPendingDeletion && deleteMutation.mutate(paymentPendingDeletion.id)
-        }
-        title="Excluir pagamento"
-        itemName={
-          paymentPendingDeletion
-            ? formatCurrency(paymentPendingDeletion.amount)
-            : undefined
-        }
-        loading={deleteMutation.isPending}
-      />
+          <ConfirmDeleteModal
+            opened={paymentPendingDeletion !== null}
+            onClose={() => setPaymentPendingDeletion(null)}
+            onConfirm={() =>
+              paymentPendingDeletion && deleteMutation.mutate(paymentPendingDeletion.id)
+            }
+            title="Excluir pagamento"
+            itemName={
+              paymentPendingDeletion
+                ? formatCurrency(paymentPendingDeletion.amount)
+                : undefined
+            }
+            loading={deleteMutation.isPending}
+          />
+        </>
+      )}
     </Card>
   );
 }

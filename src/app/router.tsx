@@ -36,6 +36,8 @@ import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { RequireRole } from '@/shared/components/Auth/RequireRole';
 import { AdminCartPage } from '@/features/orders/pages/AdminCartPage';
 import { AdminOrderEditCakePage } from '@/features/orders/pages/AdminOrderEditCakePage';
+import { OrderEditPage } from '@/features/orders/pages/OrderEditPage';
+import { OrderEditCakePage } from '@/features/orders/pages/OrderEditCakePage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -54,6 +56,8 @@ export const router = createBrowserRouter([
       { path: 'pedidos/novo', element: <NewOrderPage /> },
       { path: 'pedidos/novo/carrinho', element: <CartPage /> },
       { path: 'pedidos/:orderId', element: <OrderDetailPage /> },
+      { path: 'pedidos/:orderId/editar', element: <OrderEditPage /> },
+      { path: 'pedidos/:orderId/editar/bolo', element: <OrderEditCakePage /> },
     ],
   },
 

@@ -12,21 +12,19 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { Pencil } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatPhoneNumber } from '@/shared/utils/phone';
 import { textColor } from '@/theme/colors';
 import { CREATION_CHANNEL_LABELS } from '../constants/orderStatus';
+import { canCustomerEditOrder } from '../utils/orderValidation';
 import { OrderStatusBadge } from './OrderStatusBadge';
 import type { OrderResponse } from '../types/order';
 
-interface OrderHeaderCardProps {
+interface ClientOrderHeaderCardProps {
   order: OrderResponse;
 }
 
-const TERMINAL_STATUSES = ['CANCELED', 'REJECTED', 'COMPLETED'];
-
-export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
+export function ClientOrderHeaderCard({ order }: ClientOrderHeaderCardProps) {
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
-  const isTerminal = TERMINAL_STATUSES.includes(order.status);
+  const canEdit = canCustomerEditOrder(order);
 
   const createdDate = new Date(order.createdAt).toLocaleDateString('pt-BR');
   const pickupDate = new Date(order.pickupAt).toLocaleString('pt-BR', {
@@ -37,9 +35,23 @@ export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
     ? new Date(order.completedAt).toLocaleDateString('pt-BR')
     : null;
 
-  const editButton = isTerminal ? (
+  const editButton = canEdit ? (
+    <Button
+      component={Link}
+      to={`/pedidos/${order.id}/editar`}
+      variant="subtle"
+      color="plum"
+      leftSection={<Pencil size={16} />}
+    >
+      Editar pedido
+    </Button>
+  ) : (
     <Tooltip
-      label="Pedidos cancelados, recusados ou concluídos não podem mais ser editados."
+      label={
+        order.status === 'ACCEPTED'
+          ? 'Faltam menos de 72h para a retirada, entre em contato com a confeitaria para alterar.'
+          : 'Esse pedido não pode mais ser editado.'
+      }
       withArrow
     >
       <Box style={{ display: 'inline-block' }}>
@@ -48,34 +60,18 @@ export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
         </Button>
       </Box>
     </Tooltip>
-  ) : (
-    <Button
-      component={Link}
-      to={`/admin/pedidos/${order.id}/editar`}
-      state={{ order }}
-      variant="subtle"
-      color="plum"
-      leftSection={<Pencil size={16} />}
-    >
-      Editar pedido
-    </Button>
   );
 
   return (
     <Card padding="lg">
       <Stack gap="md">
         <Group justify="space-between" align="start" wrap="wrap" gap="sm">
-          <Stack gap={6}>
-            <Group gap="xs">
-              <Title order={2} fz={22} fw={800} c={textColor}>
-                Pedido #{order.id}
-              </Title>
-              <OrderStatusBadge status={order.status} />
-            </Group>
-            <Text size="sm" c="dimmed">
-              {order.customerName} · {formatPhoneNumber(order.customerPhone)}
-            </Text>
-          </Stack>
+          <Group gap="xs">
+            <Title order={2} fz={22} fw={800} c={textColor}>
+              Pedido #{order.id}
+            </Title>
+            <OrderStatusBadge status={order.status} />
+          </Group>
 
           {!isSmallScreen && editButton}
         </Group>
@@ -91,7 +87,7 @@ export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
           </Text>
           <Text size="sm">
             <Text span fw={700}>
-              Criado em:
+              Feito em:
             </Text>{' '}
             {createdDate}
           </Text>
