@@ -1,10 +1,5 @@
-import { ComingSoon } from '@/shared/components/ComingSoon/ComingSoon';
+import { OrderCartPage } from '../components/OrderCartPage';
 
 export function CartPage() {
-  return (
-    <ComingSoon
-      title="Carrinho"
-      description="Bolos adicionados, data/hora de retirada e finalização do pedido."
-    />
-  );
+  return <OrderCartPage mode="customer" cartId="customer-new-order" />;
 }

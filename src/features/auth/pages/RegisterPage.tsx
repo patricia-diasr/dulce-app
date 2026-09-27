@@ -53,12 +53,14 @@ export function RegisterPage() {
           <TextInput
             label="Nome completo"
             placeholder="Digite seu nome completo"
+            maxLength={150}
             key={form.key('name')}
             {...form.getInputProps('name')}
           />
           <TextInput
             label="E-mail"
             placeholder="email@email.com"
+            maxLength={255}
             key={form.key('email')}
             {...form.getInputProps('email')}
           />

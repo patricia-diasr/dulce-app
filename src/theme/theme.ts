@@ -27,6 +27,7 @@ const inputFieldTheme = {
 export const theme: MantineThemeOverride = createTheme({
   primaryColor: 'plum',
   primaryShade: 5,
+  black: textColor,
   colors: {
     plum,
     lilac,
@@ -94,6 +95,8 @@ export const theme: MantineThemeOverride = createTheme({
     Select: inputFieldTheme,
     Textarea: inputFieldTheme,
     NumberInput: inputFieldTheme,
+    DateInput: inputFieldTheme,
+    TimeInput: inputFieldTheme,
     PinInput: {
       defaultProps: {
         radius: 'sm',

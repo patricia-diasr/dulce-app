@@ -9,7 +9,6 @@ import { AdminLoginPage } from '@/features/auth/pages/AdminLoginPage';
 import { OrdersHomePage } from '@/features/orders/pages/OrdersHomePage';
 import { NewOrderPage } from '@/features/orders/pages/NewOrderPage';
 import { CartPage } from '@/features/orders/pages/CartPage';
-import { OrderSummaryPage } from '@/features/orders/pages/OrderSummaryPage';
 import { OrderDetailPage } from '@/features/orders/pages/OrderDetailPage';
 import { AdminDashboardPage } from '@/features/orders/pages/AdminDashboardPage';
 import { AdminNewOrderPage } from '@/features/orders/pages/AdminNewOrderPage';
@@ -17,6 +16,8 @@ import { AdminOrderDetailPage } from '@/features/orders/pages/AdminOrderDetailPa
 import { AdminOrderEditPage } from '@/features/orders/pages/AdminOrderEditPage';
 
 import { CustomersListPage } from '@/features/customers/pages/CustomersListPage';
+import { CreateCustomerPage } from '@/features/customers/pages/CreateCustomerPage';
+import { EditCustomerPage } from '@/features/customers/pages/EditCustomerPage';
 import { CustomerDetailPage } from '@/features/customers/pages/CustomerDetailPage';
 
 import { CalendarPage } from '@/features/schedule/pages/CalendarPage';
@@ -33,6 +34,11 @@ import { NotificationTemplateDetailPage } from '@/features/notifications/pages/N
 
 import { NotFoundPage } from '@/pages/errors/NotFoundPage';
 import { RequireRole } from '@/shared/components/Auth/RequireRole';
+import { AdminCartPage } from '@/features/orders/pages/AdminCartPage';
+import { AdminOrderEditCakePage } from '@/features/orders/pages/AdminOrderEditCakePage';
+import { OrderEditPage } from '@/features/orders/pages/OrderEditPage';
+import { OrderEditCakePage } from '@/features/orders/pages/OrderEditCakePage';
+import { AdminOrdersListPage } from '@/features/orders/pages/AdminOrdersListPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -50,8 +56,9 @@ export const router = createBrowserRouter([
       { index: true, element: <OrdersHomePage /> },
       { path: 'pedidos/novo', element: <NewOrderPage /> },
       { path: 'pedidos/novo/carrinho', element: <CartPage /> },
-      { path: 'pedidos/novo/resumo', element: <OrderSummaryPage /> },
       { path: 'pedidos/:orderId', element: <OrderDetailPage /> },
+      { path: 'pedidos/:orderId/editar', element: <OrderEditPage /> },
+      { path: 'pedidos/:orderId/editar/bolo', element: <OrderEditCakePage /> },
     ],
   },
 
@@ -65,12 +72,18 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboardPage /> },
 
+      { path: 'pedidos', element: <AdminOrdersListPage /> },
       { path: 'pedidos/novo', element: <AdminNewOrderPage /> },
+      { path: 'pedidos/novo/carrinho', element: <AdminCartPage /> },
       { path: 'pedidos/:orderId', element: <AdminOrderDetailPage /> },
       { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
+      { path: 'pedidos/:orderId/editar', element: <AdminOrderEditPage /> },
+      { path: 'pedidos/:orderId/editar/bolo', element: <AdminOrderEditCakePage /> },
 
       { path: 'clientes', element: <CustomersListPage /> },
+      { path: 'clientes/novo', element: <CreateCustomerPage /> },
       { path: 'clientes/:customerId', element: <CustomerDetailPage /> },
+      { path: 'clientes/:customerId/editar', element: <EditCustomerPage /> },
 
       { path: 'calendario', element: <CalendarPage /> },
       { path: 'calendario/dias/:date', element: <DayOrdersPage /> },

@@ -69,6 +69,7 @@ export function FlavorForm({
             <TextInput
               label="Nome do recheio"
               placeholder="Ex.: Ninho"
+              maxLength={100}
               key={form.key('name')}
               {...form.getInputProps('name')}
             />

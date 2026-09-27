@@ -11,6 +11,7 @@ export interface Customer {
 
 export interface AuthResponse {
   token: string;
+  user: string;
   role: UserRole;
   name: string;
   expiresAt: string;

@@ -103,7 +103,7 @@ export function PortalHeader({
             <Text c={creamBackground} fw={600} fz={labelFz} lh={1}>
               Logout
             </Text>
-          </UnstyledButton>{' '}
+          </UnstyledButton>
         </Group>
       </Group>
     </div>
