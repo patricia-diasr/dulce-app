@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api/client';
-import type { Customer, CustomerDetail, PaginatedResponse } from '../types';
+import type { Customer, CustomerDetail } from '../types';
 import type { CustomerFormValues } from '../types/form';
+import type { PaginatedResponse } from '@/shared/types/pagination';
 
 export type CustomerSearchField = 'name' | 'email' | 'phone';
 

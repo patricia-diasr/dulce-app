@@ -73,3 +73,26 @@ export type NestedOrder = Omit<
   OrderResponse,
   'customerId' | 'customerName' | 'customerPhone'
 >;
+
+export interface OrderListItemSummary {
+  flavorName: string;
+  sizeName: string;
+}
+
+export interface OrderListItem {
+  id: number;
+  customerId: number;
+  customerName: string;
+  pickupAt: string;
+  status: OrderStatus;
+  notes: string | null;
+  items: OrderListItemSummary[];
+}
+
+export interface ListOrdersParams {
+  status?: OrderStatus;
+  from?: string;
+  to?: string;
+  page?: number;
+  size?: number;
+}

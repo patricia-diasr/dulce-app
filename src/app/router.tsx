@@ -38,6 +38,7 @@ import { AdminCartPage } from '@/features/orders/pages/AdminCartPage';
 import { AdminOrderEditCakePage } from '@/features/orders/pages/AdminOrderEditCakePage';
 import { OrderEditPage } from '@/features/orders/pages/OrderEditPage';
 import { OrderEditCakePage } from '@/features/orders/pages/OrderEditCakePage';
+import { AdminOrdersListPage } from '@/features/orders/pages/AdminOrdersListPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <AdminDashboardPage /> },
 
+      { path: 'pedidos', element: <AdminOrdersListPage /> },
       { path: 'pedidos/novo', element: <AdminNewOrderPage /> },
       { path: 'pedidos/novo/carrinho', element: <AdminCartPage /> },
       { path: 'pedidos/:orderId', element: <AdminOrderDetailPage /> },

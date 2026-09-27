@@ -1,7 +1,14 @@
 import { AppShell, Box, NavLink, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Calendar, Cake, Bell } from 'lucide-react';
+import {
+  LayoutDashboard,
+  ClipboardList,
+  Users,
+  Calendar,
+  Cake,
+  Bell,
+} from 'lucide-react';
 import { Breadcrumbs } from '@/shared/components/Layout/Breadcrumbs';
 import { PortalHeader } from '@/shared/components/Layout/PortalHeader';
 import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
@@ -12,6 +19,7 @@ import { getName } from '@/shared/utils/tokenStorage';
 
 const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/admin/pedidos', label: 'Pedidos', icon: ClipboardList },
   { to: '/admin/clientes', label: 'Clientes', icon: Users },
   { to: '/admin/calendario', label: 'Calendário', icon: Calendar },
   { to: '/admin/recheios', label: 'Recheios', icon: Cake },

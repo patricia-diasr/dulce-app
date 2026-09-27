@@ -2,12 +2,24 @@ import { apiClient } from '@/lib/api/client';
 import type {
   CreateOrderPayload,
   InvoiceResponse,
+  ListOrdersParams,
+  OrderListItem,
   OrderResponse,
   PaymentPayload,
 } from '../types/order';
+import type { PaginatedResponse } from '@/shared/types/pagination';
 
 export async function getOrder(orderId: number): Promise<OrderResponse> {
   const { data } = await apiClient.get<OrderResponse>(`/orders/${orderId}`);
+  return data;
+}
+
+export async function listOrders(
+  params: ListOrdersParams,
+): Promise<PaginatedResponse<OrderListItem>> {
+  const { data } = await apiClient.get<PaginatedResponse<OrderListItem>>('/orders', {
+    params,
+  });
   return data;
 }
 
