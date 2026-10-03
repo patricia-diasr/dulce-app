@@ -21,6 +21,7 @@ import { listOrders } from '../api/ordersApi';
 import { ORDER_STATUS_LABELS } from '../constants/orderStatus';
 import { OrderListCard } from '../components/OrderListCard';
 import type { OrderStatus } from '../types/order';
+import { FIRST_DAY_OF_WEEK } from '@/features/schedule/constants/calendar';
 
 const STATUS_OPTIONS = (Object.keys(ORDER_STATUS_LABELS) as OrderStatus[]).map(
   (status) => ({
@@ -152,6 +153,7 @@ export function AdminOrdersListPage() {
             clearable
             styles={LILAC_INPUT_STYLES}
             w={{ base: '100%', sm: FILTER_ITEM_WIDTH }}
+            firstDayOfWeek={FIRST_DAY_OF_WEEK}
           />
           <DateInput
             placeholder="Até"
@@ -162,6 +164,7 @@ export function AdminOrdersListPage() {
             clearable
             styles={LILAC_INPUT_STYLES}
             w={{ base: '100%', sm: FILTER_ITEM_WIDTH }}
+            firstDayOfWeek={FIRST_DAY_OF_WEEK}
           />
         </Group>
 

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Button,
   Divider,
@@ -9,17 +10,25 @@ import {
   Textarea,
   Title,
 } from '@mantine/core';
-import { DateInput, TimeInput } from '@mantine/dates';
+import { DateInput } from '@mantine/dates';
+import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import { listScheduleBlocks } from '@/features/schedule/api/scheduleApi';
+import {
+  getAvailableTimeSlots,
+  isDayFullyBlocked,
+} from '@/features/schedule/utils/blockOccurrences';
 import { textColor } from '@/theme/colors';
 import { CartItemRow } from './CartItemRow';
+import type { CartItem } from '../hooks/useOrderCart';
 import { calculateGrossAmount } from '../utils/pricing';
 import {
   isDiscountValid,
   isPickupTooSoon,
   MIN_HOURS_BEFORE_PICKUP,
 } from '../utils/orderValidation';
-import type { CartItem } from '../hooks/useOrderCart';
+import { PickupTimeSelect } from '@/features/schedule/components/PickupTimeSelect';
+import { FIRST_DAY_OF_WEEK } from '@/features/schedule/constants/calendar';
 
 interface CartItemsCardProps {
   items: CartItem[];
@@ -70,6 +79,22 @@ export function CartItemsCard({
     !!pickupTime &&
     !discountExceedsTotal &&
     !pickupTooSoon;
+
+  const { data: blocks = [] } = useQuery({
+    queryKey: ['schedule', 'blocks'],
+    queryFn: () => listScheduleBlocks(true),
+    enabled: !isAdmin,
+  });
+
+  const availableTimes = useMemo(() => {
+    if (!pickupDate) return [];
+
+    const slots = getAvailableTimeSlots(isAdmin ? [] : blocks, pickupDate);
+    if (isAdmin) return slots;
+
+    const cutoff = dayjs().add(MIN_HOURS_BEFORE_PICKUP, 'hour');
+    return slots.filter((time) => !dayjs(`${pickupDate}T${time}`).isBefore(cutoff));
+  }, [pickupDate, blocks, isAdmin]);
 
   return (
     <Paper p={{ base: 'md', sm: 'xl' }} radius="md" shadow="md" withBorder bg="#FEFEFE">
@@ -122,11 +147,18 @@ export function CartItemsCard({
                   ? dayjs().add(MIN_HOURS_BEFORE_PICKUP, 'hour').toDate()
                   : undefined
               }
+              excludeDate={
+                !isAdmin
+                  ? (date) => isDayFullyBlocked(blocks, dayjs(date).format('YYYY-MM-DD'))
+                  : undefined
+              }
+              firstDayOfWeek={FIRST_DAY_OF_WEEK}
             />
-            <TimeInput
-              label="Hora"
+            <PickupTimeSelect
               value={pickupTime}
-              onChange={(event) => onPickupTimeChange(event.currentTarget.value)}
+              onChange={onPickupTimeChange}
+              availableTimes={availableTimes}
+              disabled={!pickupDate}
             />
           </SimpleGrid>
           {pickupTooSoon && (
@@ -158,7 +190,6 @@ export function CartItemsCard({
               min={0}
               max={grossAmount}
               step={0.5}
-              placeholder="R$ 0.00"
               prefix="R$ "
               value={discount ?? undefined}
               onChange={(value) =>

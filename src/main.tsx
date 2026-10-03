@@ -16,6 +16,7 @@ import '@fontsource/nunito-sans/800.css';
 import '@fontsource/nunito-sans/900.css';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/schedule/styles.css';
 import '@mantine/notifications/styles.css';
 import 'dayjs/locale/pt-br';
 import './index.css';
