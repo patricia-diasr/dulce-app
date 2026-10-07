@@ -14,6 +14,22 @@ export async function getOrder(orderId: number): Promise<OrderResponse> {
   return data;
 }
 
+export async function listAllOrdersInRange(
+  from: string,
+  to: string,
+): Promise<OrderListItem[]> {
+  const size = 100;
+  const first = await listOrders({ from, to, page: 0, size });
+
+  const remainingPages = await Promise.all(
+    Array.from({ length: Math.max(first.totalPages - 1, 0) }, (_, index) =>
+      listOrders({ from, to, page: index + 1, size }),
+    ),
+  );
+
+  return [first, ...remainingPages].flatMap((page) => page.content);
+}
+
 export async function listOrders(
   params: ListOrdersParams,
 ): Promise<PaginatedResponse<OrderListItem>> {
