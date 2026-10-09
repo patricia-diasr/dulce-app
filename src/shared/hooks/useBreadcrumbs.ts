@@ -35,7 +35,7 @@ const ADMIN_BREADCRUMB_ROUTES: BreadcrumbRoute[] = [
   { pattern: '/admin/recheios/novo', label: 'Cadastrar recheio' },
   { pattern: '/admin/recheios/:flavorId', label: 'Editar recheio' },
   { pattern: '/admin/notificacoes', label: 'Notificações' },
-  { pattern: '/admin/notificacoes/:typeId', label: 'Editor de notificação' },
+  { pattern: '/admin/notificacoes/:typeId', label: 'Editar notificação' },
 ];
 
 function buildTrail(pathname: string, routes: BreadcrumbRoute[]): BreadcrumbItem[] {
