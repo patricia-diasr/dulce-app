@@ -10,3 +10,7 @@ export const BUSINESS_TIMEZONE = 'America/Sao_Paulo';
 export function toBusinessTime(iso: string) {
   return dayjs(iso).tz(BUSINESS_TIMEZONE);
 }
+
+export function businessToday(): string {
+  return dayjs().tz(BUSINESS_TIMEZONE).format('YYYY-MM-DD');
+}

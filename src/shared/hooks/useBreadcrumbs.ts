@@ -31,6 +31,7 @@ const ADMIN_BREADCRUMB_ROUTES: BreadcrumbRoute[] = [
   { pattern: '/admin/calendario/dias/:date', label: 'Pedidos do dia' },
   { pattern: '/admin/calendario/bloqueios/novo', label: 'Criar bloqueio' },
   { pattern: '/admin/calendario/bloqueios/:blockId', label: 'Editar bloqueio' },
+  { pattern: '/admin/relatorios', label: 'Relatórios' },
   { pattern: '/admin/recheios', label: 'Recheios' },
   { pattern: '/admin/recheios/novo', label: 'Cadastrar recheio' },
   { pattern: '/admin/recheios/:flavorId', label: 'Editar recheio' },

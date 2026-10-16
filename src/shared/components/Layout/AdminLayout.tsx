@@ -8,6 +8,7 @@ import {
   Calendar,
   Cake,
   Bell,
+  ChartColumn,
 } from 'lucide-react';
 import { Breadcrumbs } from '@/shared/components/Layout/Breadcrumbs';
 import { PortalHeader } from '@/shared/components/Layout/PortalHeader';
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/pedidos', label: 'Pedidos', icon: ClipboardList },
   { to: '/admin/clientes', label: 'Clientes', icon: Users },
+  { to: '/admin/relatorios', label: 'Relatórios', icon: ChartColumn },
   { to: '/admin/calendario', label: 'Calendário', icon: Calendar },
   { to: '/admin/recheios', label: 'Recheios', icon: Cake },
   { to: '/admin/notificacoes', label: 'Notificações', icon: Bell },
