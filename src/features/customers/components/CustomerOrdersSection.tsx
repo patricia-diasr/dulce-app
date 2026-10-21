@@ -3,6 +3,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { textColor } from '@/theme/colors';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { CustomerOrderCard } from './CustomerOrderCard';
 import type { Customer, Order } from '../types';
 
@@ -13,6 +14,7 @@ interface CustomerOrdersSectionProps {
 
 export function CustomerOrdersSection({ customer, orders }: CustomerOrdersSectionProps) {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
 
   return (
@@ -32,6 +34,7 @@ export function CustomerOrdersSection({ customer, orders }: CustomerOrdersSectio
                 customerId: customer.id,
                 customerName: customer.name,
                 customerPhone: customer.phone,
+                breadcrumbTrail,
               },
             })
           }

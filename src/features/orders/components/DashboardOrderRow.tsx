@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Badge, Group, Stack, Text } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { CustomerAvatar } from '@/shared/components/CustomerAvatar/CustomerAvatar';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { orderStatusColor } from '@/theme/colors';
 import { ORDER_STATUS_LABELS } from '../constants/orderStatus';
 import { formatOrderItemsSummary } from '../utils/orderItemsSummary';
@@ -13,6 +14,7 @@ interface DashboardOrderRowProps {
 
 export function DashboardOrderRow({ order }: DashboardOrderRowProps) {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const [isHovered, setIsHovered] = useState(false);
   const pickupDate = new Date(order.pickupAt).toLocaleString('pt-BR', {
     dateStyle: 'short',
@@ -24,7 +26,9 @@ export function DashboardOrderRow({ order }: DashboardOrderRowProps) {
       justify="space-between"
       wrap="nowrap"
       gap="sm"
-      onClick={() => navigate(`/admin/pedidos/${order.id}`)}
+      onClick={() =>
+        navigate(`/admin/pedidos/${order.id}`, { state: { breadcrumbTrail } })
+      }
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

@@ -53,7 +53,7 @@ export function NextPickupCard({ order }: NextPickupCardProps) {
           </Stack>
         </Group>
 
-        <Badge size="lg" color="plum" variant="filled">
+        <Badge size="lg" color="plum.6" variant="filled">
           {formatPickupCountdown(order.pickupAt)}
         </Badge>
       </Group>

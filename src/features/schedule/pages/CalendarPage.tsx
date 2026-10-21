@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Fab } from '@/shared/components/Fab/Fab';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 import { CalendarToolbar } from '../components/CalendarToolbar';
 import { DayAgenda } from '../components/DayAgenda';
@@ -54,6 +55,7 @@ const renderWeekEventBody = (event: ScheduleEventData) => {
 
 export function CalendarPage() {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const isDesktop = useMediaQuery('(min-width: 75em)');
 
   const [view, setView] = useState<CalendarView>('month');
@@ -150,7 +152,9 @@ export function CalendarPage() {
                     endTime="22:00:00"
                     onEventClick={(event) => {
                       if (typeof event.id === 'number')
-                        navigate(`/admin/pedidos/${event.id}`);
+                        navigate(`/admin/pedidos/${event.id}`, {
+                          state: { breadcrumbTrail },
+                        });
                     }}
                     onTimeSlotClick={({ slotStart }) => handleDaySelect(slotStart)}
                     renderEventBody={renderWeekEventBody}

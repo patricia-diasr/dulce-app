@@ -12,6 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { listFlavors } from '@/features/flavors/api/flavorsApi';
+import type { AdminBreadcrumbState } from '@/shared/hooks/useBreadcrumbs';
 import type { CakeBase } from '@/shared/utils/cakeBase';
 import { CakeForm } from './CakeForm';
 import { CakeSummary } from './CakeSummary';
@@ -51,7 +52,7 @@ export function OrderCakeBuilder({
   const navigate = useNavigate();
   const location = useLocation();
   const rawState = location.state as
-    (EditingItemState & AdminCustomerLocationState) | null;
+    (EditingItemState & AdminCustomerLocationState & AdminBreadcrumbState) | null;
   const editingState = rawState?.editingItemId ? (rawState as EditingItemState) : null;
 
   const [values, setValues] = useState<CakeFormValues>(
@@ -98,6 +99,10 @@ export function OrderCakeBuilder({
     cartPathProp ??
     (mode === 'admin' ? '/admin/pedidos/novo/carrinho' : '/pedidos/novo/carrinho');
   const backPath = editingState ? cartPath : cancelPath;
+  const breadcrumbState =
+    mode === 'admin' && rawState?.breadcrumbTrail
+      ? { breadcrumbTrail: rawState.breadcrumbTrail }
+      : undefined;
 
   const handleChange = (nextValues: CakeFormValues) => {
     const flavorChanged = nextValues.flavorId !== formValues.flavorId;
@@ -122,12 +127,12 @@ export function OrderCakeBuilder({
     } else {
       addItem(formValues, selectedFlavor);
     }
-    navigate(cartPath);
+    navigate(cartPath, { state: breadcrumbState });
   };
 
   const handleCancel = () => {
     if (!editingState) clear();
-    navigate(backPath);
+    navigate(backPath, { state: breadcrumbState });
   };
 
   if (isLoading) {

@@ -1,6 +1,6 @@
 import { Box, Button, Container, Skeleton, Text } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 import { getOrder } from '../api/ordersApi';
 import { OrderEditBuilder } from '../components/OrderEditBuilder';
@@ -8,6 +8,7 @@ import { OrderEditBuilder } from '../components/OrderEditBuilder';
 const TERMINAL_STATUSES = ['CANCELED', 'REJECTED', 'COMPLETED'];
 
 export function AdminOrderEditPage() {
+  const location = useLocation();
   const { orderId } = useParams<{ orderId: string }>();
   const orderIdNumber = Number(orderId);
   const hasValidOrderId = Number.isInteger(orderIdNumber) && orderIdNumber > 0;
@@ -68,6 +69,7 @@ export function AdminOrderEditPage() {
           <Button
             component={Link}
             to={`/admin/pedidos/${order.id}`}
+            state={location.state}
             color="plum.6"
             radius="sm"
           >

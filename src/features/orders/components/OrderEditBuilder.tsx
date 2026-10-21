@@ -3,7 +3,7 @@ import { Affix, Box, Button, Container, Grid, Group, Stack, Text } from '@mantin
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { Flavor } from '@/features/flavors/types';
 import { getApiErrorMessage } from '@/lib/api/errors';
 import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
@@ -73,6 +73,7 @@ function buildStateFromOrder(order: OrderResponse): CartState {
 
 export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   const cartId = `${mode}-order-edit-${order.id}`;
@@ -109,7 +110,7 @@ export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
 
   const cleanupAndLeave = (to: string) => {
     clear();
-    navigate(to);
+    navigate(to, { state: mode === 'admin' ? location.state : undefined });
   };
 
   const updateMutation = useMutation({
@@ -211,11 +212,19 @@ export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
             onNotesChange={setNotes}
             onEditItem={(item) =>
               navigate(cakeFormPath, {
-                state: { editingItemId: item.id, cake: item.cake },
+                state: {
+                  ...(mode === 'admin' && location.state ? location.state : {}),
+                  editingItemId: item.id,
+                  cake: item.cake,
+                },
               })
             }
             onDeleteItem={setItemPendingDeletion}
-            onAddAnother={() => navigate(cakeFormPath)}
+            onAddAnother={() =>
+              navigate(cakeFormPath, {
+                state: mode === 'admin' ? location.state : undefined,
+              })
+            }
             onCancel={() => cleanupAndLeave(detailPath)}
             onFinish={handleFinish}
             finishing={updateMutation.isPending}

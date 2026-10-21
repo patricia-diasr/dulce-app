@@ -6,6 +6,7 @@ interface FabProps extends ButtonProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component?: any;
   to?: string;
+  state?: object;
   onClick?: MouseEventHandler;
   children?: ReactNode;
 }
