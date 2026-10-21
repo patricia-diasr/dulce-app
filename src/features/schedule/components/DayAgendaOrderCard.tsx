@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Badge, Card, Group, Stack, Text } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { CustomerAvatar } from '@/shared/components/CustomerAvatar/CustomerAvatar';
 import { ORDER_STATUS_LABELS } from '@/features/orders/constants/orderStatus';
 import { orderStatusColor } from '@/theme/colors';
@@ -14,13 +15,16 @@ interface DayAgendaOrderCardProps {
 
 export function DayAgendaOrderCard({ order }: DayAgendaOrderCardProps) {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const [isHovered, setIsHovered] = useState(false);
   const time = toBusinessTime(order.pickupAt).format('HH:mm');
 
   return (
     <Card
       padding="md"
-      onClick={() => navigate(`/admin/pedidos/${order.id}`)}
+      onClick={() =>
+        navigate(`/admin/pedidos/${order.id}`, { state: { breadcrumbTrail } })
+      }
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

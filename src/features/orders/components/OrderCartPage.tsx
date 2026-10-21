@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Affix, Box, Button, Container, Grid, Group, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getApiErrorMessage } from '@/lib/api/errors';
 import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
+import type { AdminBreadcrumbState } from '@/shared/hooks/useBreadcrumbs';
 import { createOrder } from '../api/ordersApi';
 import { CART_INFO_ITEMS } from '../constants/infoItems';
 import { CartItemsCard } from './CartItemsCard';
@@ -27,6 +28,13 @@ interface OrderCartPageProps {
 
 export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const breadcrumbTrail = (location.state as AdminBreadcrumbState | null)
+    ?.breadcrumbTrail;
+  const breadcrumbState = useMemo(
+    () => (mode === 'admin' && breadcrumbTrail ? { breadcrumbTrail } : undefined),
+    [mode, breadcrumbTrail],
+  );
 
   const {
     items,
@@ -134,10 +142,13 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
 
   useEffect(() => {
     if (!items.length && !noCustomerSelected) {
-      const timeout = setTimeout(() => navigate(cakeFormPath, { replace: true }), 1500);
+      const timeout = setTimeout(
+        () => navigate(cakeFormPath, { replace: true, state: breadcrumbState }),
+        1500,
+      );
       return () => clearTimeout(timeout);
     }
-  }, [items.length, noCustomerSelected, cakeFormPath, navigate]);
+  }, [items.length, noCustomerSelected, cakeFormPath, navigate, breadcrumbState]);
 
   if (noCustomerSelected) {
     return (
@@ -196,11 +207,15 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
             onNotesChange={setNotes}
             onEditItem={(item) =>
               navigate(cakeFormPath, {
-                state: { editingItemId: item.id, cake: item.cake },
+                state: {
+                  ...(breadcrumbState ?? {}),
+                  editingItemId: item.id,
+                  cake: item.cake,
+                },
               })
             }
             onDeleteItem={setItemPendingDeletion}
-            onAddAnother={() => navigate(cakeFormPath)}
+            onAddAnother={() => navigate(cakeFormPath, { state: breadcrumbState })}
             onCancel={handleCancel}
             onFinish={handleFinish}
             finishing={createMutation.isPending}

@@ -9,6 +9,33 @@ import type {
 } from '../types/order';
 import type { PaginatedResponse } from '@/shared/types/pagination';
 
+export interface OrderTicketsSummary {
+  from: string;
+  to: string;
+  ordersCount: number;
+  ticketsCount: number;
+  maxTickets: number;
+}
+
+export async function getOrderTicketsSummary(
+  from: string,
+  to: string,
+): Promise<OrderTicketsSummary> {
+  const { data } = await apiClient.get<OrderTicketsSummary>('/orders/tickets/summary', {
+    params: { from, to },
+  });
+  return data;
+}
+
+export async function getOrderTicketsPdf(from: string, to: string): Promise<Blob> {
+  const { data } = await apiClient.get<Blob>('/orders/tickets', {
+    params: { from, to },
+    responseType: 'blob',
+    timeout: 60_000,
+  });
+  return data;
+}
+
 export async function getOrder(orderId: number): Promise<OrderResponse> {
   const { data } = await apiClient.get<OrderResponse>(`/orders/${orderId}`);
   return data;

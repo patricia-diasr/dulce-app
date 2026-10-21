@@ -3,6 +3,7 @@ import { Badge, Card, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Cake } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import {
   CREATION_CHANNEL_LABELS,
   INVOICE_STATUS_COLORS,
@@ -19,6 +20,7 @@ interface CustomerOrderCardProps {
 
 export function CustomerOrderCard({ order }: CustomerOrderCardProps) {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const [isHovered, setIsHovered] = useState(false);
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
   const isVerySmallScreen = useMediaQuery('(max-width: 349px)');
@@ -60,7 +62,9 @@ export function CustomerOrderCard({ order }: CustomerOrderCardProps) {
       padding="lg"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => navigate(`/admin/pedidos/${order.id}`)}
+      onClick={() =>
+        navigate(`/admin/pedidos/${order.id}`, { state: { breadcrumbTrail } })
+      }
       style={{
         cursor: 'pointer',
         transition: 'transform 150ms ease, box-shadow 150ms ease',

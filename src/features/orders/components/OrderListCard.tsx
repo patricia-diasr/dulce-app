@@ -3,6 +3,7 @@ import { Badge, Card, Stack, Text } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useNavigate } from 'react-router-dom';
 import { CustomerAvatar } from '@/shared/components/CustomerAvatar/CustomerAvatar';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { orderStatusColor } from '@/theme/colors';
 import { ORDER_STATUS_LABELS } from '../constants/orderStatus';
 import { formatOrderItemsSummary } from '../utils/orderItemsSummary';
@@ -14,6 +15,7 @@ interface OrderListCardProps {
 
 export function OrderListCard({ order }: OrderListCardProps) {
   const navigate = useNavigate();
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const [isHovered, setIsHovered] = useState(false);
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
   const isVerySmallScreen = useMediaQuery('(max-width: 349px)');
@@ -26,7 +28,9 @@ export function OrderListCard({ order }: OrderListCardProps) {
   return (
     <Card
       padding="lg"
-      onClick={() => navigate(`/admin/pedidos/${order.id}`)}
+      onClick={() =>
+        navigate(`/admin/pedidos/${order.id}`, { state: { breadcrumbTrail } })
+      }
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{

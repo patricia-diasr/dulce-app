@@ -1,6 +1,10 @@
 import { matchPath, useLocation } from 'react-router-dom';
 import type { BreadcrumbItem } from '@/shared/components/Layout/Breadcrumbs';
 
+export interface AdminBreadcrumbState {
+  breadcrumbTrail?: BreadcrumbItem[];
+}
+
 interface BreadcrumbRoute {
   pattern: string;
   label: string;
@@ -60,6 +64,47 @@ export function useClientBreadcrumbs(): BreadcrumbItem[] {
 }
 
 export function useAdminBreadcrumbs(): BreadcrumbItem[] {
-  const { pathname } = useLocation();
-  return buildTrail(pathname, ADMIN_BREADCRUMB_ROUTES);
+  const { pathname, state } = useLocation();
+  const routeTrail = buildTrail(pathname, ADMIN_BREADCRUMB_ROUTES);
+  const navigationState = state as AdminBreadcrumbState | null;
+  const breadcrumbTrail = navigationState?.breadcrumbTrail;
+  const orderId =
+    matchPath('/admin/pedidos/:orderId', pathname)?.params.orderId ??
+    matchPath('/admin/pedidos/:orderId/editar', pathname)?.params.orderId ??
+    matchPath('/admin/pedidos/:orderId/editar/bolo', pathname)?.params.orderId;
+  const isOrderDetailRoute = Boolean(orderId && /^\d+$/.test(orderId));
+  const isNewOrderRoute = Boolean(
+    matchPath('/admin/pedidos/novo', pathname) ||
+    matchPath('/admin/pedidos/novo/carrinho', pathname),
+  );
+  const isCustomerEditRoute = Boolean(
+    matchPath('/admin/clientes/:customerId/editar', pathname),
+  );
+  const isScheduleBlockRoute = Boolean(
+    matchPath('/admin/calendario/bloqueios/novo', pathname) ||
+    matchPath('/admin/calendario/bloqueios/:blockId', pathname),
+  );
+
+  let routeContextStart = -1;
+  if (isOrderDetailRoute) {
+    routeContextStart = routeTrail.findIndex(
+      ({ href }) => href !== undefined && matchPath('/admin/pedidos/:orderId', href),
+    );
+  } else if (isNewOrderRoute) {
+    routeContextStart = routeTrail.findIndex(
+      ({ href }) => href === '/admin/pedidos/novo',
+    );
+  } else if (isCustomerEditRoute || isScheduleBlockRoute) {
+    routeContextStart = routeTrail.length - 1;
+  }
+
+  if (
+    Array.isArray(breadcrumbTrail) &&
+    breadcrumbTrail.length > 0 &&
+    routeContextStart >= 0
+  ) {
+    return [...breadcrumbTrail, ...routeTrail.slice(routeContextStart)];
+  }
+
+  return routeTrail;
 }

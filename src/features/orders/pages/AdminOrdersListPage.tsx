@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
+  Button,
   Box,
   Container,
   Group,
@@ -8,20 +9,22 @@ import {
   SimpleGrid,
   Skeleton,
   Text,
+  Tooltip,
   UnstyledButton,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useInViewport } from '@mantine/hooks';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { Calendar, ChevronDown } from 'lucide-react';
+import { Calendar, ChevronDown, Printer } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import { MAX_CONTENT_WIDTH } from '@/theme/layout';
 import { listOrders } from '../api/ordersApi';
 import { ORDER_STATUS_LABELS } from '../constants/orderStatus';
+import { PrintOrderTicketsModal } from '../components/PrintOrderTicketsModal';
 import { OrderListCard } from '../components/OrderListCard';
-import type { OrderStatus } from '../types/order';
 import { FIRST_DAY_OF_WEEK } from '@/features/schedule/constants/calendar';
+import type { OrderStatus } from '../types/order';
 
 const STATUS_OPTIONS = (Object.keys(ORDER_STATUS_LABELS) as OrderStatus[]).map(
   (status) => ({
@@ -49,6 +52,7 @@ export function AdminOrdersListPage() {
   );
   const [fromDate, setFromDate] = useState<string | null>(searchParams.get('from'));
   const [toDate, setToDate] = useState<string | null>(searchParams.get('to'));
+  const [printModalOpened, setPrintModalOpened] = useState(false);
 
   useEffect(() => {
     const params: Record<string, string> = {};
@@ -60,6 +64,18 @@ export function AdminOrdersListPage() {
   }, [status, fromDate, toDate]);
 
   const hasIncompleteRange = Boolean(fromDate) !== Boolean(toDate);
+  const dateRangeDays =
+    fromDate && toDate
+      ? dayjs(toDate).startOf('day').diff(dayjs(fromDate).startOf('day'), 'day') + 1
+      : 0;
+  const isValidPrintRange = Boolean(
+    fromDate &&
+    toDate &&
+    dayjs(fromDate).isValid() &&
+    dayjs(toDate).isValid() &&
+    dateRangeDays >= 1 &&
+    dateRangeDays <= 14,
+  );
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -94,11 +110,22 @@ export function AdminOrdersListPage() {
   const showEmptyState =
     !hasIncompleteRange && !isLoading && !isError && orders.length === 0;
   const statusLabel = status ? ORDER_STATUS_LABELS[status] : 'Status';
+  const printDisabled = !isValidPrintRange;
+  const printDisabledReason =
+    !fromDate || !toDate
+      ? 'Informe o período de retirada.'
+      : !dayjs(fromDate).isValid() || !dayjs(toDate).isValid()
+        ? 'Selecione datas válidas para o período.'
+        : dateRangeDays < 1
+          ? 'A data final não pode ser anterior à inicial.'
+          : dateRangeDays > 14
+            ? 'O período máximo para impressão é de 14 dias.'
+            : 'Confira as datas do período.';
 
   return (
     <Box style={{ minHeight: '100%', position: 'relative' }}>
       <Container size={MAX_CONTENT_WIDTH} py={{ base: 'md', sm: 'xl' }}>
-        <Group mb="lg" gap="xs" wrap="wrap">
+        <Group mb="lg" gap="xs" wrap="wrap" align="center">
           <Menu withArrow position="bottom-start">
             <Menu.Target>
               <UnstyledButton
@@ -166,7 +193,29 @@ export function AdminOrdersListPage() {
             w={{ base: '100%', sm: FILTER_ITEM_WIDTH }}
             firstDayOfWeek={FIRST_DAY_OF_WEEK}
           />
+          <Tooltip
+            label={printDisabled ? printDisabledReason : 'Imprimir tickets do período'}
+            withArrow
+          >
+            <span>
+              <Button
+                color="plum.6"
+                leftSection={<Printer size={16} />}
+                disabled={printDisabled}
+                onClick={() => setPrintModalOpened(true)}
+              >
+                Imprimir tickets
+              </Button>
+            </span>
+          </Tooltip>
         </Group>
+
+        <PrintOrderTicketsModal
+          opened={printModalOpened}
+          onClose={() => setPrintModalOpened(false)}
+          from={fromDate}
+          to={toDate}
+        />
 
         {hasIncompleteRange && (
           <Text size="sm" c="rejected" mb="md">

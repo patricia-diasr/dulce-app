@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Pencil } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { formatPhoneNumber } from '@/shared/utils/phone';
 import { textColor } from '@/theme/colors';
 import { CREATION_CHANNEL_LABELS } from '../constants/orderStatus';
@@ -25,6 +25,7 @@ interface OrderHeaderCardProps {
 const TERMINAL_STATUSES = ['CANCELED', 'REJECTED', 'COMPLETED'];
 
 export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
+  const location = useLocation();
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
   const isTerminal = TERMINAL_STATUSES.includes(order.status);
 
@@ -52,7 +53,7 @@ export function OrderHeaderCard({ order }: OrderHeaderCardProps) {
     <Button
       component={Link}
       to={`/admin/pedidos/${order.id}/editar`}
-      state={{ order }}
+      state={{ ...(location.state ?? {}), order }}
       variant="subtle"
       color="plum"
       leftSection={<Pencil size={16} />}

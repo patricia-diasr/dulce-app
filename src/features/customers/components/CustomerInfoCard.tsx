@@ -2,6 +2,7 @@ import { Button, Card, Divider, Group, Stack, Text, ThemeIcon } from '@mantine/c
 import { useMediaQuery } from '@mantine/hooks';
 import { Pencil, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { formatPhoneNumber } from '@/shared/utils/phone';
 import type { Customer } from '../types';
 
@@ -10,6 +11,7 @@ interface CustomerInfoCardProps {
 }
 
 export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const isSmallScreen = useMediaQuery('(max-width: 399px)');
   const isVerySmallScreen = useMediaQuery('(max-width: 349px)');
 
@@ -17,6 +19,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
     <Button
       component={Link}
       to={`/admin/clientes/${customer.id}/editar`}
+      state={{ breadcrumbTrail }}
       variant="subtle"
       color="plum"
       leftSection={<Pencil size={16} />}

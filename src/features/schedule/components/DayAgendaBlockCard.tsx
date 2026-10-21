@@ -6,6 +6,7 @@ import { Lock, Pencil, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getApiErrorMessage } from '@/lib/api/errors';
 import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
+import { useAdminBreadcrumbs } from '@/shared/hooks/useBreadcrumbs';
 import { deleteScheduleBlock } from '../api/scheduleApi';
 import {
   formatBlockDescription,
@@ -20,6 +21,7 @@ interface DayAgendaBlockCardProps {
 
 export function DayAgendaBlockCard({ occurrence }: DayAgendaBlockCardProps) {
   const { block, startTime, endTime } = occurrence;
+  const breadcrumbTrail = useAdminBreadcrumbs();
   const queryClient = useQueryClient();
   const [confirming, setConfirming] = useState(false);
 
@@ -78,6 +80,7 @@ export function DayAgendaBlockCard({ occurrence }: DayAgendaBlockCardProps) {
               color="plum"
               component={Link}
               to={`/admin/calendario/bloqueios/${block.id}`}
+              state={{ breadcrumbTrail }}
               aria-label="Editar bloqueio"
             >
               <Pencil size={16} />
