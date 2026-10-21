@@ -39,6 +39,7 @@ import { AdminOrderEditCakePage } from '@/features/orders/pages/AdminOrderEditCa
 import { OrderEditPage } from '@/features/orders/pages/OrderEditPage';
 import { OrderEditCakePage } from '@/features/orders/pages/OrderEditCakePage';
 import { AdminOrdersListPage } from '@/features/orders/pages/AdminOrdersListPage';
+import { ReportsPage } from '@/features/reports/pages/ReportsPage';
 
 export const router = createBrowserRouter([
   { path: '/login', element: <LoginPage /> },
@@ -89,6 +90,8 @@ export const router = createBrowserRouter([
       { path: 'calendario/dias/:date', element: <DayOrdersPage /> },
       { path: 'calendario/bloqueios/novo', element: <CreateBlockPage /> },
       { path: 'calendario/bloqueios/:blockId', element: <EditBlockPage /> },
+
+      { path: 'relatorios', element: <ReportsPage /> },
 
       { path: 'recheios', element: <FlavorsListPage /> },
       { path: 'recheios/novo', element: <CreateFlavorPage /> },
