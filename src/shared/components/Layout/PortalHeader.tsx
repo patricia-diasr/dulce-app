@@ -5,6 +5,7 @@ import { creamBackground } from '@/theme/colors';
 import { MAX_HEADER_WIDTH } from '@/theme/layout';
 
 interface PortalHeaderProps {
+  homePath: string;
   userName: string;
   showMenuButton?: boolean;
   onMenuClick?: () => void;
@@ -24,6 +25,7 @@ const logoutIconStyle = {
 const labelFz = 'clamp(0.8rem, 1.4vw, 1rem)';
 
 export function PortalHeader({
+  homePath,
   userName,
   showMenuButton = false,
   onMenuClick,
@@ -55,7 +57,12 @@ export function PortalHeader({
               <Menu style={menuIconStyle} color={creamBackground} />
             </ActionIcon>
           )}
-          <Wordmark c={creamBackground} fz="clamp(1.15rem, 2.4vw, 1.75rem)" lh={1} />
+          <Wordmark
+            homePath={homePath}
+            c={creamBackground}
+            fz="clamp(1.15rem, 2.4vw, 1.75rem)"
+            lh={1}
+          />
         </Group>
 
         <Group gap="clamp(8px, 1.6vw, 20px)" wrap="nowrap" align="center">

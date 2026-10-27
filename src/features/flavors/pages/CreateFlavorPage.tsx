@@ -21,6 +21,7 @@ export function CreateFlavorPage() {
         message: 'O novo recheio já está disponível no cardápio.',
       });
       queryClient.invalidateQueries({ queryKey: ['admin', 'flavors'] });
+      queryClient.invalidateQueries({ queryKey: ['flavors', 'active'] });
       navigate('/admin/recheios');
     },
     onError: (error) =>

@@ -8,6 +8,7 @@ import { OrderInvoiceCard } from '../components/OrderInvoiceCard';
 import { OrderItemsList } from '../components/OrderItemsList';
 import { OrderStatusActions } from '../components/OrderStatusActions';
 import type { OrderResponse } from '../types/order';
+import { invalidateOrderQueries } from '../utils/invalidateOrderQueries';
 
 export function AdminOrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -30,6 +31,7 @@ export function AdminOrderDetailPage() {
     queryClient.setQueryData<OrderResponse>(['admin', 'orders', orderIdNumber], (prev) =>
       prev ? { ...prev, ...patch } : prev,
     );
+    void invalidateOrderQueries(queryClient);
   };
 
   if (isLoading) {

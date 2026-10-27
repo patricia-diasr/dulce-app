@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Affix, Box, Button, Container, Grid, Group, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getApiErrorMessage } from '@/lib/api/errors';
 import { ConfirmDeleteModal } from '@/shared/components/ConfirmDeleteModal/ConfirmDeleteModal';
@@ -14,6 +14,7 @@ import { ImportantOrderInfo } from './ImportantOrderInfo';
 import { useOrderCart, type CartItem } from '../hooks/useOrderCart';
 import type { CreateOrderPayload } from '../types/order';
 import { getCustomerId } from '@/shared/utils/tokenStorage';
+import { invalidateOrderQueries } from '../utils/invalidateOrderQueries';
 import { CAKE_SIZES } from '../types/cake';
 import {
   isDiscountValid,
@@ -29,6 +30,7 @@ interface OrderCartPageProps {
 export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const breadcrumbTrail = (location.state as AdminBreadcrumbState | null)
     ?.breadcrumbTrail;
   const breadcrumbState = useMemo(
@@ -67,7 +69,7 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
 
   const createMutation = useMutation({
     mutationFn: (payload: CreateOrderPayload) => createOrder(customerId!, payload),
-    onSuccess: () => {
+    onSuccess: async () => {
       notifications.show({
         color: 'accepted',
         title: 'Pedido realizado!',
@@ -77,6 +79,7 @@ export function OrderCartPage({ mode, cartId }: OrderCartPageProps) {
             : 'O pedido foi registrado com sucesso.',
       });
       clear();
+      await invalidateOrderQueries(queryClient, mode === 'customer');
       navigate(cancelPath);
     },
     onError: (error) =>
