@@ -8,6 +8,7 @@ import { ConfirmActionModal } from '@/shared/components/ConfirmActionModal/Confi
 import { textColor } from '@/theme/colors';
 import { cancelOrder } from '../api/ordersApi';
 import { canCustomerCancelOrder } from '../utils/orderValidation';
+import { invalidateOrderQueries } from '../utils/invalidateOrderQueries';
 import type { OrderResponse } from '../types/order';
 
 interface ClientOrderActionsProps {
@@ -30,6 +31,7 @@ export function ClientOrderActions({ order }: ClientOrderActionsProps) {
         message: `O pedido #${order.id} foi cancelado.`,
       });
       queryClient.setQueryData(['orders', order.id], data);
+      void invalidateOrderQueries(queryClient, true);
       setConfirming(false);
     },
     onError: (error) =>

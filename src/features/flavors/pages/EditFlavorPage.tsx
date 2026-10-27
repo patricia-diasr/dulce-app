@@ -30,6 +30,7 @@ export function EditFlavorPage() {
         message: 'As alterações foram salvas.',
       });
       queryClient.invalidateQueries({ queryKey: ['admin', 'flavors'] });
+      queryClient.invalidateQueries({ queryKey: ['flavors', 'active'] });
       navigate('/admin/recheios');
     },
     onError: (error) =>

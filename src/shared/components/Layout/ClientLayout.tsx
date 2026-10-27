@@ -14,7 +14,7 @@ export function ClientLayout() {
   return (
     <AppShell header={{ height: 64 }}>
       <AppShell.Header>
-        <PortalHeader userName={getName() ?? ''} onLogout={handleLogout} />
+        <PortalHeader homePath="/" userName={getName() ?? ''} onLogout={handleLogout} />
         <Breadcrumbs items={breadcrumbs} />
       </AppShell.Header>
       <AppShell.Main mt={60}>

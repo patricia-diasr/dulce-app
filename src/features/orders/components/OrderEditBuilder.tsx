@@ -24,6 +24,7 @@ import type {
   OrderItemResponse,
   OrderResponse,
 } from '../types/order';
+import { invalidateOrderQueries } from '../utils/invalidateOrderQueries';
 
 interface OrderEditBuilderProps {
   mode: 'customer' | 'admin';
@@ -115,13 +116,17 @@ export function OrderEditBuilder({ mode, order }: OrderEditBuilderProps) {
 
   const updateMutation = useMutation({
     mutationFn: (payload: CreateOrderPayload) => updateOrder(order.id, payload),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       notifications.show({
         color: 'accepted',
         title: 'Pedido atualizado!',
         message: 'As alterações foram salvas.',
       });
-      queryClient.setQueryData(['orders', order.id], data);
+      queryClient.setQueryData(
+        mode === 'admin' ? ['admin', 'orders', order.id] : ['orders', order.id],
+        data,
+      );
+      await invalidateOrderQueries(queryClient, mode === 'customer');
       cleanupAndLeave(detailPath);
     },
     onError: (error) =>

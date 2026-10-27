@@ -45,6 +45,7 @@ export function AdminLayout() {
     >
       <AppShell.Header style={{ borderBottom: 'none' }}>
         <PortalHeader
+          homePath="/admin"
           userName={getName() ?? ''}
           showMenuButton
           onMenuClick={toggleNav}

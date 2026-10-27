@@ -35,6 +35,7 @@ export function FlavorsListPage() {
       });
       setFlavorToDelete(null);
       queryClient.invalidateQueries({ queryKey: ['admin', 'flavors'] });
+      queryClient.invalidateQueries({ queryKey: ['flavors', 'active'] });
     },
     onError: (error) =>
       notifications.show({
